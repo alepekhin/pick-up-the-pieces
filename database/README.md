@@ -10,7 +10,7 @@ Assuming `docker` is installed:
   ```
 
 - docker pull mongo
-- docker run -it -v /data/db:`ls -d ~/mongodata` --name mongodb -d mongo
+- docker run -it -v /data/db:\`ls -d ~/mongodata\` --name mongodb -d mongo
 - docker ps
 
 Nice, we see that container is running.
