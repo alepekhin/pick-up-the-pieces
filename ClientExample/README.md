@@ -3,7 +3,7 @@
 This example is copied from 
 
 
-`https://github.com/onelogin/onelogin-oidc-node/tree/master/1.%20Auth%20Flow`
+`https://github.com/onelogin/onelogin-oidc-node/tree/master/1. Auth Flow`
 
 
 and changed for using my IdentityServer
