@@ -11,3 +11,5 @@ See client app in `ClientExample`
 ## Additional resources
 
 https://connect2id.com/learn/openid-connect
+
+https://github.com/panva/node-oidc-provider
