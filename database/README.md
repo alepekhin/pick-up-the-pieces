@@ -43,6 +43,16 @@ show collections
 db.<collection_name>.find()
 ```
 
+The free UI tool for mongodb:
+
+`https://www.mongodb.com/try/download/compass`
+
+
+After installing enter the new connection as
+
+`mongodb://localhost:27017`
+
+
 
 
 
