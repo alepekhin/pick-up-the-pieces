@@ -1,0 +1,17 @@
+{
+  "name": "adminapp",
+  "version": "1.0.0",
+  "description": "Manage clents in database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource": "^0.7.1",
+    "apollo-server": "^2.15.0",
+    "mongodb": "^3.5.9"
+  }
+}
