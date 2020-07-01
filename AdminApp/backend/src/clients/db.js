@@ -1,6 +1,7 @@
 'use-strict'
 
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 const { DataSource } = require('apollo-datasource');
 
 class db extends DataSource {
@@ -30,22 +31,48 @@ class db extends DataSource {
         return await cursor.toArray();
     }
 
-    async createClient(newClient) {
-        const result = await this.client.db().collection(this.collection).insertOne(newClient);
-        return result.insertedId;
+    async getClient(id) {
+        if (typeof id === 'string') {
+            id = new ObjectId(id);
+        }
+        return await this.db.collection(this.collection).findOne({_id: id});
     }
 
-    async updateClient(email, clientInput) {
-        const result = await this.client.db().collection(this.collection).updateOne({ email: email }, { $set: clientInput });
-        return result.modifiedCount;
+    async getClientByEmail(email) {
+        return await this.db.collection(this.collection).findOne({email: email});
+    }
+
+    async createClient(clientInput) {
+        const rec = await this.getClientByEmail(clientInput.email);
+        if ( rec != null) {
+            return new SaveClientResponse(false, `email duplicated ${clientInput.email}`, null);    
+        }
+        await this.db.collection(this.collection).insertOne(clientInput);
+        const client =  await this.getClient(result.insertedId);
+        return new SaveClientResponse(true, "client added successfuly", client);
+    }
+
+    async updateClient(email, updateInput) {
+        await this.db.collection(this.collection).updateOne({ email: email }, { $set: updateInput });
+        const client =  await this.getClientByEmail(email);
+        return new SaveClientResponse(true, "client updated successfuly", client);
     }
 
     async deleteClient(email) {
-        const result = await this.client.db().collection(this.collection).deleteOne({ email: email });
-        return result.deletedCount;
+        let rec = await this.getClientByEmail(email);
+        await this.db.collection(this.collection).deleteOne({ email: email });
+        return new SaveClientResponse(true, "client deleted", rec);
     }
 
+}
 
+class SaveClientResponse {
+
+    constructor(success, message, client) {
+        this.success = success;
+        this.message = message;
+        this.client = client;
+    }
 }
 
 module.exports = db;

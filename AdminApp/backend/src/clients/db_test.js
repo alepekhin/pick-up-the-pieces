@@ -16,8 +16,7 @@ async function insert() {
         roles: 'guest admin'
 
     };
-    let insertedId = await db.createClient(newClient);
-    console.log(insertedId);
+    return await db.createClient(newClient);
 }
 
 async function update() {
@@ -35,6 +34,16 @@ async function delete1() {
     console.log(deletedCount);
 }
 
+async function findOne(id) {
+    let rec = await db.getClient(id);
+    console.log(rec);
+}
+
+async function findByEmail(email) {
+    let rec = await db.getClientByEmail(email);
+    console.log(rec);
+}
+
 async function print() {
     let result = await db.getAllClients();
     console.log(result);
@@ -42,9 +51,16 @@ async function print() {
 
 async function doit() {
     await db.connect();
-    await insert();
-    await update();
-    await print();
+    let res = await insert();
+    console.log('inserted '+JSON.stringify(res))
+    //id = id.toString()
+    //console.log('id type '+(typeof id))
+    //console.log('find by id '+id)
+    //await findOne(id);
+    //await update();
+    //await print();
+    //await findOne('5ef9fc56801a3c3adf675c58')
+    //await findByEmail('xxx@xxx4.com')
     await db.disconnect();
 }
 
