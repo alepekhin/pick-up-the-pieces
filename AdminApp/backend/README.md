@@ -1,4 +1,4 @@
-# Backend with GraphQL API
+# Backend with ApolloServer
 
 - npm install
 - node src/index.js
@@ -9,30 +9,16 @@ Inside Playground:
 QUERY ALL:
 ```
 query Query {
-  clients { email }
+  clients {client_id, client_secret, redirect_uris}
 }
 ```
 
-QUERY BY ID:
-```
-query($id: String) {
- client(id: $id) {
-   _id, email
- }
-}
-
-query variables:
-
-{
-  "id":"5ef9f8a1904efe3a055a1a17"
-}
-```
 
 ADD CLIENT:
 ```
 mutation($client: ClientInput!) {
  addClient(clientInput: $client) {
-   success, message, client {_id,email}
+   success, message, client {client_id,client_secret}
  }
 }
 
@@ -40,28 +26,31 @@ query variables:
 
 {
   "client": {
-  	"email": "myemail@dummy.com"
+  	"client_id": "foo2",
+    "client_secret": "bar",
+    "redirect_uris": ["http://localhost:3000/oauth/callback"]
   }
-  
 }
 
 ```
 
 UPDATE CLIENT:
 ```
-mutation($email: String!, $client: UpdateInput!) {
- updateClient(email: $email, updateInput: $client) {
-   success, message, client {_id,email,name}
+mutation($id: String!, $client: UpdateInput!) {
+ updateClient(client_id: $id, updateInput: $client) {
+   success, message, client {client_id,client_secret}
  }
 }
 
 query variables:
 
 {
-  "email": "xxx@xxx2.com",
+  "id": "foo2", 
   "client": {
-  	"name": "John Dough"
+    "client_secret": "bar2",
+    "redirect_uris": ["http://localhost:3000/oauth/callback"]
   }
+  
 }
 
 ```
@@ -69,16 +58,17 @@ query variables:
 
 DELETE CLIENT:
 ```
-mutation($email: String!) {
- deleteClient(email: $email) {
-   success, message, client {_id,email}
+mutation($id: String!) {
+ deleteClient(client_id: $id) {
+   success, message, client {client_id,client_secret}
  }
 }
 
 query variables:
 
 {
-  "email": "myemail2345667@dummy.com"
+  "id": "foo2"
+  
 }
 
 ```

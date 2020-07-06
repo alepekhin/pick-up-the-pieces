@@ -3,31 +3,31 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
 type Client {
     _id: ID!
-    email: String!
-    name: String
-    roles: String
+    client_id: String!
+    client_secret: String!
+    redirect_uris: [String]!
 }
 
 input ClientInput {
-    email: String
-    name: String
-    roles: String
+    client_id: String!
+    client_secret: String!
+    redirect_uris: [String]!
 }
 
 input UpdateInput {
-    name: String
-    roles: String
+    client_secret: String!
+    redirect_uris: [String]!
 }
 
 type Query {
     clients: [Client]!
-    client(id: String): Client
+    client(client_id: String!): Client
 }
 
 type Mutation {
     addClient(clientInput: ClientInput!): SaveClientResponse!
-    updateClient(email: String!, updateInput: UpdateInput!): SaveClientResponse!
-    deleteClient(email: String!): SaveClientResponse!
+    updateClient(client_id: String!, updateInput: UpdateInput!): SaveClientResponse!
+    deleteClient(client_id: String!): SaveClientResponse!
 }
 
 type SaveClientResponse {

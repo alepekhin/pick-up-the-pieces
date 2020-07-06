@@ -1,7 +1,6 @@
 'use-strict'
 
 const MongoClient = require('mongodb').MongoClient;
-const ObjectId = require('mongodb').ObjectId;
 const { DataSource } = require('apollo-datasource');
 
 class db extends DataSource {
@@ -26,41 +25,34 @@ class db extends DataSource {
         console.log("connect closed");
     }
 
-    async getAllClients() {
+    async getClients() {
         var cursor = await this.db.collection(this.collection).find();
         return await cursor.toArray();
     }
 
-    async getClient(id) {
-        if (typeof id === 'string') {
-            id = new ObjectId(id);
-        }
-        return await this.db.collection(this.collection).findOne({_id: id});
-    }
-
-    async getClientByEmail(email) {
-        return await this.db.collection(this.collection).findOne({email: email});
+    async getClient(client_id) {
+        return await this.db.collection(this.collection).findOne({client_id: client_id});
     }
 
     async createClient(clientInput) {
-        const rec = await this.getClientByEmail(clientInput.email);
+        const rec = await this.getClient(clientInput.client_id);
         if ( rec != null) {
-            return new SaveClientResponse(false, `email duplicated ${clientInput.email}`, null);    
+            return new SaveClientResponse(false, `client_id duplicated ${clientInput.client_id}`, null);    
         }
-        await this.db.collection(this.collection).insertOne(clientInput);
+        let result = await this.db.collection(this.collection).insertOne(clientInput);
         const client =  await this.getClient(result.insertedId);
         return new SaveClientResponse(true, "client added successfuly", client);
     }
 
-    async updateClient(email, updateInput) {
-        await this.db.collection(this.collection).updateOne({ email: email }, { $set: updateInput });
-        const client =  await this.getClientByEmail(email);
+    async updateClient(client_id, updateInput) {
+        await this.db.collection(this.collection).updateOne({ client_id: client_id }, { $set: updateInput });
+        const client =  await this.getClient(client_id);
         return new SaveClientResponse(true, "client updated successfuly", client);
     }
 
-    async deleteClient(email) {
-        let rec = await this.getClientByEmail(email);
-        await this.db.collection(this.collection).deleteOne({ email: email });
+    async deleteClient(client_id) {
+        let rec = await this.getClient(client_id);
+        await this.db.collection(this.collection).deleteOne({ client_id: client_id });
         return new SaveClientResponse(true, "client deleted", rec);
     }
 

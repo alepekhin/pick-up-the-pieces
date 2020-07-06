@@ -1,5 +1,5 @@
 {
-  "name": "adminapp",
+  "name": "adminapp-backend",
   "version": "1.0.0",
   "description": "Manage clents in database",
   "main": "index.js",

@@ -1,13 +1,11 @@
 'use-strict'
 
-module.exports = {
+const resolvers = {
     Query: {
       clients: (_, __, {dataSources}) => {
-        console.log('Inside resolver')
-        return dataSources.db.getAllClients();
+        return dataSources.db.getClients();
       },
       client: (_, {id}, {dataSources}) => {
-        console.log('Inside resolver, id '+id)
         return dataSources.db.getClient(id);
       }
     },
@@ -15,11 +13,13 @@ module.exports = {
       addClient: async (_, { clientInput }, { dataSources }) => {
         return  await dataSources.db.createClient(clientInput);
       },
-      updateClient: async (_, { email, updateInput }, { dataSources }) => {
-        return  await dataSources.db.updateClient(email, updateInput);
+      updateClient: async (_, { client_id, updateInput }, { dataSources }) => {
+        return  await dataSources.db.updateClient(client_id, updateInput);
       }, 
-      deleteClient: async (_, { email }, { dataSources }) => {
-        return  await dataSources.db.deleteClient(email);
+      deleteClient: async (_, { client_id }, { dataSources }) => {
+        return  await dataSources.db.deleteClient(client_id);
       }   
     }
   }
+
+  module.exports = resolvers
