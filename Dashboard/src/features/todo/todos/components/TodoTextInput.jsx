@@ -29,6 +29,7 @@ export default function TodoTextInput(props) {
 
     return (
       <TextField
+          value = {text}
           variant="outlined"
           margin="normal"
           required
