@@ -4,7 +4,7 @@ import { DataSource } from 'apollo-datasource';
 // when graphql schema changed
 import { ClientInput, UpdateInput, Client, SaveClientResponse } from '../generated/graphql';
 
-export class Db extends DataSource {
+export class Db {
 
     private client: MongoClient
     private db: any
@@ -14,7 +14,7 @@ export class Db extends DataSource {
         ,readonly dbName: string
         ,readonly collection:string
     ) {
-        super();
+        // super();
         this.client = new MongoClient(this.url, { useNewUrlParser: true, useUnifiedTopology: true });
     }
 
