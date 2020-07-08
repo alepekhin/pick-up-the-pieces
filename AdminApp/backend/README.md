@@ -74,6 +74,23 @@ query variables:
 ```
 
 
+Use code-gen for types generation from schema
+
+- npm install @graphql-codegen/cli
+
+- npx graphql-codegen init
+
+add 
+```
+"generate": "graphql-codegen --config codegen.yml"
+```
+to package.json
+
+- npm install
+
+- npm run generate
+
+
 
 
 

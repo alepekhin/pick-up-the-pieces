@@ -53,6 +53,18 @@ After installing enter the new connection as
 `mongodb://localhost:27017`
 
 
+## Add the first user to the database
+
+use admin
+db.createUser(
+  {
+    user: "sysadm2",
+    pwd: "sysadm2",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+  }
+)
+
+
 
 
 

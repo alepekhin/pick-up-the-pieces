@@ -4,15 +4,29 @@
   "description": "Manage clents in database",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@graphql-codegen/cli": "^1.16.3",
+    "@types/mongodb": "^3.5.25",
     "apollo-datasource": "^0.7.1",
     "apollo-server": "^2.15.0",
     "mongodb": "^3.5.9"
+  },
+  "devDependencies": {
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.6",
+    "@graphql-codegen/typescript": "1.16.3",
+    "@graphql-codegen/typescript-resolvers": "1.16.3",
+    "@graphql-codegen/introspection": "1.16.3",
+    "@graphql-codegen/cli": "1.16.3"
   }
 }
