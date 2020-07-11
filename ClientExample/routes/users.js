@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
 router.get('/profile', function(req, res, next) {
 
   request.get(
-    'http://localhost:4000/me',   // For EU instances use https://openid-connect-eu.onelogin.com/oidc/me
+    'http://localhost:4000/oidc/me',   // For EU instances use https://openid-connect-eu.onelogin.com/oidc/me
     {
     'auth': {
       'bearer': req.session.accessToken
