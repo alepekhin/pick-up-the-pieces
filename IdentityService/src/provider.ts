@@ -1,7 +1,6 @@
 import express from "express";
 import { Provider, ResponseType } from 'oidc-provider';
 import dotenv from 'dotenv'
-import { createBrotliCompress } from "zlib";
 
 dotenv.config()
 
@@ -21,12 +20,22 @@ const clients = [
     post_logout_redirect_uris: [
       'http://localhost:3000'
     ]
-  }
+  },
+  {
+    client_id: 'foo1',
+    client_secret: 'ss',
+    redirect_uris: [
+      'http://localhost:3000/oauth/callback'
+    ],
+    post_logout_redirect_uris: [
+      'http://localhost:3000'
+    ]
+  },
 
 ]
 
 const findAccount = async (ctx:any, id:any) => {
-  if (id == 'foo')
+  if (id == 'foo' || id == 'foo1')
   return {
     accountId: id,
     async claims(use:any, scope:any) {
@@ -46,10 +55,6 @@ const claims =  {
   openid: ['sub', 'email', 'name', 'roles']
 }
 
-const find = async () => {
-  console.log('find client called')
-}
-
 const configuration = {
   features: {
     registration: {
@@ -62,7 +67,6 @@ const configuration = {
   claims,
   findAccount,
   clients,
-  // find
   // ... see available options /docs
 
 };

@@ -12,7 +12,7 @@ var session = require('express-session');
 // Use Passport with OpenId Connect strategy to
 // authenticate users with OneLogin
 var passport = require('passport')
-var OneLoginStrategy = require('passport-openidconnect').Strategy
+var OidcStrategy = require('passport-openidconnect').Strategy
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -21,7 +21,7 @@ var users = require('./routes/users');
 
 // Configure the OpenId Connect Strategy
 // with credentials obtained from OneLogin
-passport.use(new OneLoginStrategy({
+passport.use(new OidcStrategy({
   issuer: process.env.OIDC_BASE_URI,
   clientID: process.env.OIDC_CLIENT_ID,
   clientSecret: process.env.OIDC_CLIENT_SECRET,
@@ -39,7 +39,12 @@ function(req, issuer, userId, profile, accessToken, refreshToken, params, cb) {
   console.log('refreshToken:', refreshToken);
   console.log('params:', params);
 
+  console.log('---------------------------')
+  console.log('id_token'+params.id_token)
+  console.log('---------------------------')
+
   req.session.accessToken = accessToken;
+  req.session.id_token = params.id_token;
 
   return cb(null, profile);
 }));
@@ -113,13 +118,7 @@ app.get('/oauth/callback', passport.authenticate('openidconnect', {
   callback: true,
   successReturnToOrRedirect: '/users',
   failureRedirect: '/'
-}),
-function(req,res) {
-  console.log('-----------------------------')
-  console.log('res callback:'+simpleStringify(res))
-  console.log('-----------------------------')
-
-}
+})
 )
 
 function simpleStringify (object){
@@ -142,28 +141,13 @@ function simpleStringify (object){
 // Destroy both the local session and
 // revoke the access_token at OneLogin
 app.get('/logout', function(req, res){
-    console.log('-----------------------------')
-    console.log('res logout:'+simpleStringify(res))
-    console.log('-----------------------------')
-  res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleXN0b3JlLUNIQU5HRS1NRSJ9.eyJzdWIiOiJmb28iLCJlbWFpbCI6ImZvb0BiYXIuY29tIiwibmFtZSI6IkZvbyBCYXIiLCJyb2xlcyI6ImFkbWluIGd1ZXN0IHN1cGVydXNlciIsImF0X2hhc2giOiJzM0s0c2NSTllFR2w3T0V5TEdYRU9nIiwiYXVkIjoiZm9vIiwiZXhwIjoxNTk0NDgyMTUxLCJpYXQiOjE1OTQ0Nzg1NTEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC9vaWRjIn0.ImnqPURRtUzLMyBYEyEZnlvK0WEEksLyAf4_GHm0cX7cGG3UnhXiUpZQaRz2TfOEpd_rax0bsp5xoO85kD8DhvVrI2efC-rdNNU90Lgd9hNNU7SZ5v8hx22und8PB1Sv1qrCdbv1NDo6CqFQgC49Wxc5gg-4ZKmFMz9QsepsXOzTJqfiR_-JxCWXbzsaL-NlrKWy0iCQmJIjWrQTaUcMDEBjJU04QrpibDI4qczhY6liyb8n9v872NAN9ANeEUFZL19ShYOfvVtekvCovgI3IQrw3Z3yRrQ7PFOxBJcVp0cJsaR4EyRxnUbxgupFpYLSOoxjcCCWtqg6emLXaJByDw`)
-
-});
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+  res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  console.log('-----------------------------')
-  console.log('res err hand:'+simpleStringify(res))
-  console.log('-----------------------------')
-  console.log('error handler '+err.status)
   if (err.status == 502) {
-    res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleXN0b3JlLUNIQU5HRS1NRSJ9.eyJzdWIiOiJmb28iLCJlbWFpbCI6ImZvb0BiYXIuY29tIiwibmFtZSI6IkZvbyBCYXIiLCJyb2xlcyI6ImFkbWluIGd1ZXN0IHN1cGVydXNlciIsImF0X2hhc2giOiJzM0s0c2NSTllFR2w3T0V5TEdYRU9nIiwiYXVkIjoiZm9vIiwiZXhwIjoxNTk0NDgyMTUxLCJpYXQiOjE1OTQ0Nzg1NTEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC9vaWRjIn0.ImnqPURRtUzLMyBYEyEZnlvK0WEEksLyAf4_GHm0cX7cGG3UnhXiUpZQaRz2TfOEpd_rax0bsp5xoO85kD8DhvVrI2efC-rdNNU90Lgd9hNNU7SZ5v8hx22und8PB1Sv1qrCdbv1NDo6CqFQgC49Wxc5gg-4ZKmFMz9QsepsXOzTJqfiR_-JxCWXbzsaL-NlrKWy0iCQmJIjWrQTaUcMDEBjJU04QrpibDI4qczhY6liyb8n9v872NAN9ANeEUFZL19ShYOfvVtekvCovgI3IQrw3Z3yRrQ7PFOxBJcVp0cJsaR4EyRxnUbxgupFpYLSOoxjcCCWtqg6emLXaJByDw`)
+    res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
   }
   // set locals, only providing error in development
   res.locals.message = err.message;

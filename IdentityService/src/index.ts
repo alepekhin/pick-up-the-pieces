@@ -1,4 +1,4 @@
-import { app } from './src/provider';
+import { app } from './provider';
 
 const port = process.env.PORT;
 const uri = process.env.OIDC_BASE_URI
