@@ -1,0 +1,16 @@
+type Location {
+    location: String!
+}
+
+input LocationInput {
+    location: String!
+}
+
+type Query {
+    locations: [Location]
+}
+
+type Mutation {
+  createLocation(location: LocationInput): String,
+  deleteLocation(location: String!): String
+}

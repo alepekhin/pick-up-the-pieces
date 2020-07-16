@@ -1,0 +1,18 @@
+type Association {
+    location: String!
+    device: String!
+}
+
+input AssociationInput {
+    location: String!
+    device: String!
+}
+
+type Query {
+    associations: [Association]
+}
+
+type Mutation {
+  createAssociation(association: AssociationInput): String,
+  deleteAssociation(association: AssociationInput!): String
+}

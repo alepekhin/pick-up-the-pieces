@@ -1,0 +1,16 @@
+type Device {
+    device: String!
+}
+
+input DeviceInput {
+    device: String!
+}
+
+type Query {
+    devices: [Device]
+}
+
+type Mutation {
+  createDevice(device: DeviceInput): String,
+  deleteDevice(device: String!): String
+}

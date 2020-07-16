@@ -1,6 +1,8 @@
 import express from "express";
+import bodyparser  from "body-parser";
 import { Provider, ResponseType } from 'oidc-provider';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import RangeParser from "range-parser";
 
 dotenv.config()
 
@@ -35,7 +37,6 @@ const clients = [
 ]
 
 const findAccount = async (ctx:any, id:any) => {
-  if (id == 'foo' || id == 'foo1')
   return {
     accountId: id,
     async claims(use:any, scope:any) {
@@ -48,7 +49,6 @@ const findAccount = async (ctx:any, id:any) => {
       };
     }
   }
-  else throw new Error('Account not found');
 }
 
 const claims =  {
@@ -78,5 +78,5 @@ export const oidc = new Provider(uri, configuration);
 
 // assumes express ^4.0.0
 app.use(prefix, oidc.callback);
-
+app.use(bodyparser.json());
 

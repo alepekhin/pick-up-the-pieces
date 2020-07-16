@@ -17,6 +17,7 @@ var OidcStrategy = require('passport-openidconnect').Strategy
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+
 //  acr_values: 'onelogin:nist:level:1:re-auth'
 
 // Configure the OpenId Connect Strategy
@@ -25,9 +26,9 @@ passport.use(new OidcStrategy({
   issuer: process.env.OIDC_BASE_URI,
   clientID: process.env.OIDC_CLIENT_ID,
   clientSecret: process.env.OIDC_CLIENT_SECRET,
-  authorizationURL: `${process.env.OIDC_BASE_URI}/auth`,
-  userInfoURL: `${process.env.OIDC_BASE_URI}/me`,
-  tokenURL: `${process.env.OIDC_BASE_URI}/token`,
+  authorizationURL: `${process.env.OIDC_BASE_URI}/protocol/openid-connect/auth`,
+  userInfoURL: `${process.env.OIDC_BASE_URI}/protocol/openid-connect/userinfo`,
+  tokenURL: `${process.env.OIDC_BASE_URI}/protocol/openid-connect/token`,
   callbackURL: process.env.OIDC_REDIRECT_URI,
   passReqToCallback: true
 },
@@ -141,13 +142,15 @@ function simpleStringify (object){
 // Destroy both the local session and
 // revoke the access_token at OneLogin
 app.get('/logout', function(req, res){
-  res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
+  //res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
+  res.redirect(`http://localhost:8080/auth/realms/master/protocol/openid-connect/logout`)
 });
 
 // error handler
 app.use(function(err, req, res, next) {
   if (err.status == 502) {
-    res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
+//    res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
+    res.redirect(`http://localhost:8080/auth/realms/master/protocol/openid-connect/logout`)
   }
   // set locals, only providing error in development
   res.locals.message = err.message;

@@ -10,7 +10,7 @@ Assuming `docker` is installed:
   ```
 
 - docker pull mongo
-- docker run -p 27017:27017 -it -v /data/db:\`ls -d ~/mongodata\` --name mongodb -d mongo
+- docker run -p 27017:27017 -it -v \`ls -d ~/mongodata\`:/data/db: --name mongodb -d mongo
 
 This command create container named `mongodb`
 
