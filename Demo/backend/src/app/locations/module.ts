@@ -1,4 +1,4 @@
-import { LocationsResolver } from './locations.resolver'
+import { LocationsResolver } from './resolvers'
 import { Module } from '@nestjs/common'
 
 @Module({

@@ -1,7 +1,7 @@
-import { AssociationsModule } from './app/associations/associations.module'
-import { DevicesModule } from './app/devices/devices.module'
+import { AssociationsModule } from './app/associations/module'
+import { DevicesModule } from './app/devices/module'
 import { GraphQLModule } from '@nestjs/graphql'
-import { LocationsModule } from './app/locations/locations.module'
+import { LocationsModule } from './app/locations/module'
 import { Module } from '@nestjs/common'
 import { join } from 'path'
 

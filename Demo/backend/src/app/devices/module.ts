@@ -1,4 +1,4 @@
-import { DevicesResolver } from './devices.resolver'
+import { DevicesResolver } from './resolvers'
 import { Module } from '@nestjs/common'
 
 @Module({

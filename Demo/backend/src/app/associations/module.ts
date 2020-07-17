@@ -1,4 +1,4 @@
-import { AssociationsResolver } from './associations.resolver'
+import { AssociationsResolver } from './resolvers'
 import { Module } from '@nestjs/common'
 
 @Module({
