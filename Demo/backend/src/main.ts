@@ -6,8 +6,9 @@ const port = process.env.PORT || defaultPort
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
-  await app.listen(port, () => console.log(`🚀 App listening on the port ${port}`))
+  await app.listen(port, () =>
+    console.log(`🚀 App listening on the port ${port}`),
+  )
 }
 
 void bootstrap()
-

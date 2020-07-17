@@ -4,7 +4,6 @@ import knex from '../database/db'
 
 @Resolver()
 export class AssociationsResolver {
-
   @Query()
   async associations(): Promise<Association[]> {
     return knex('associations')
@@ -12,18 +11,22 @@ export class AssociationsResolver {
 
   @Mutation()
   async createAssociation(
-    @Args('association') association: AssociationInput
+    @Args('association') association: AssociationInput,
   ): Promise<string> {
-    await knex('associations').insert({ location: association.location, device: association.device })
+    await knex('associations').insert({
+      location: association.location,
+      device: association.device,
+    })
     return 'OK'
   }
 
   @Mutation()
   async deleteAssociation(
-    @Args('association') association: AssociationInput
+    @Args('association') association: AssociationInput,
   ): Promise<string> {
-    await knex('associations').where({ location: association.location, device: association.device }).del()
+    await knex('associations')
+      .where({ location: association.location, device: association.device })
+      .del()
     return 'OK'
   }
-
 }
