@@ -20,7 +20,7 @@ Admin console is available at http://localhost:8080/auth/admin
 - create new realm `demo`
 - get available endpoints at:
 ```
-http://localhost:8080/auth/realms/demo/.well-known/openid-configuration
+[http://localhost:8080/auth/realms/demo/.well-known/openid-configuration](http://localhost:8080/auth/realms/demo/.well-known/openid-configuration)
 
 ```  
   
