@@ -143,14 +143,14 @@ function simpleStringify (object){
 // revoke the access_token at OneLogin
 app.get('/logout', function(req, res){
   //res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
-  res.redirect(`http://localhost:8080/auth/realms/master/protocol/openid-connect/logout`)
+  res.redirect(`http://localhost:8080/auth/realms/demo/protocol/openid-connect/logout`)
 });
 
 // error handler
 app.use(function(err, req, res, next) {
   if (err.status == 502) {
 //    res.redirect(`http://localhost:4000/oidc/session/end?post_logout_redirect_uri=http://localhost:3000&id_token_hint=${req.session.id_token}`)
-    res.redirect(`http://localhost:8080/auth/realms/master/protocol/openid-connect/logout`)
+    res.redirect(`http://localhost:8080/auth/realms/demo/protocol/openid-connect/logout`)
   }
   // set locals, only providing error in development
   res.locals.message = err.message;

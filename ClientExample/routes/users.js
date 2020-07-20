@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
 router.get('/profile', function(req, res, next) {
 
   request.get(
-    'http://localhost:8080/auth/realms/master/protocol/openid-connect/userinfo',   // For EU instances use https://openid-connect-eu.onelogin.com/oidc/me
+    'http://localhost:8080/auth/realms/demo/protocol/openid-connect/userinfo',   // For EU instances use https://openid-connect-eu.onelogin.com/oidc/me
     {
     'auth': {
       'bearer': req.session.accessToken

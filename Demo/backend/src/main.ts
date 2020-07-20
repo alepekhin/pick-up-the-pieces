@@ -1,7 +1,7 @@
 import { AppModule } from './app.module'
 import { NestFactory } from '@nestjs/core'
 
-const defaultPort = 3000
+const defaultPort = 4000
 const port = process.env.PORT || defaultPort
 
 async function bootstrap(): Promise<void> {

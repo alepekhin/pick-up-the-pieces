@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { LocationsModule } from './app/locations/module'
 import { Module } from '@nestjs/common'
 import { join } from 'path'
+// import { KeycloakModule } from './keycloak.module'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { join } from 'path'
     LocationsModule,
     DevicesModule,
     AssociationsModule,
+    // KeycloakModule,
   ],
   controllers: [],
   providers: [],
