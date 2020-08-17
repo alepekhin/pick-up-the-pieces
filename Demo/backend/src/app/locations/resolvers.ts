@@ -1,13 +1,11 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Location, LocationInput } from '../../graphql'
 import knex from '../database/db'
-import { Roles } from 'nest-keycloak-connect/decorators/roles.decorator'
 
 @Resolver()
 export class LocationsResolver {
 
   @Query()
-  @Roles('admin')
   async locations(): Promise<Location[]> {
     return knex('locations')
   }
