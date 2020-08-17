@@ -15,16 +15,16 @@
   "devDependencies": {
     "keycloak-request-token": "^0.1.0",
     "keycloak-client-registration": "^0.1.0",
-    "eslint": "^3.3.1",
-    "eslint-config-semistandard": "^7.0.0-beta.0",
-    "eslint-config-standard": "^6.0.0",
-    "eslint-plugin-promise": "^3.3.0",
-    "eslint-plugin-react": "^6.1.2",
-    "eslint-plugin-standard": "^2.0.0",
-    "ink-docstrap": "^1.1.4",
-    "jsdoc": "^3.4.0",
-    "jshint": "^2.9.1",
-    "tape": "^4.5.1",
-    "roi": "^0.15.0"
+    "eslint": "^7.7.0",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-standard": "^4.0.1",
+    "ink-docstrap": "^1.3.2",
+    "jsdoc": "^3.6.5",
+    "jshint": "^2.12.0",
+    "tape": "^5.0.1",
+    "roi": "^0.18.0"
   }
 }
