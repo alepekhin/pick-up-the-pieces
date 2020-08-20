@@ -63,6 +63,7 @@ app.get('/service/secured', keycloak.protect('realm:admin'), function (req, res)
 });
 
 app.get('/service/admin', keycloak.protect('realm:admin'), function (req, res) {
+  demo(req)
   res.json({message: 'admin'});
 });
 
@@ -73,3 +74,30 @@ app.use('*', function (req, res) {
 app.listen(4000, function () {
   console.log('Started at port 4000');
 });
+
+function extractJwt(headers) {
+  if (headers && !headers.authorization) {
+    throw new UnauthorizedException();
+  }
+
+  const auth = headers.authorization.split(' ');
+
+  // We only allow bearer
+  if (auth[0].toLowerCase() !== 'bearer') {
+    throw new UnauthorizedException();
+  }
+
+  return auth[1];
+}
+
+async function demo(req) {
+  console.log('>>> req headers '+JSON.stringify(req.headers))
+  let jwt = extractJwt(req.headers)
+  console.log('>>> req jwt '+jwt)
+  let info = await keycloak.grantManager.userInfo(jwt)
+  console.log('>>> userInfo '+JSON.stringify(info))
+  let result = await keycloak.grantManager.validateAccessToken(jwt)
+  console.log('>>> result '+JSON.stringify(result))
+  //keycloak.grantManager
+
+}

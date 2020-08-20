@@ -38,9 +38,6 @@ async function bootstrap(): Promise<void> {
     admin: '/'
   }));
   app.enableCors({ origin: '*' })
-  app.get('/service/admin', keycloak.protect('realm:admin'), function (req, res) {
-    res.json({message: 'admin'});
-  });
   await app.listen(port, () =>
     console.log(`🚀 App listening on the port ${port}`),
   )
