@@ -9,6 +9,14 @@ export interface Endpoint {
   introspection_endpoint: string
 }
 
+/*
+We can get access_token from incoming request
+with all other fields in token after Direct Access Grant
+or get it from Authorization: bearer access_token
+or from cookie
+Note: we can not add Authorization header when redirect
+- we can add cookie only!
+*/
 export interface Token {
   access_token: string
   expires_in?: number
@@ -96,7 +104,47 @@ export default class oidc {
       })
   }
 
-  async getUserInfo() {
+  // Authorization Flow Grant
+  async getTokenAuth(client_id: string, code: string, redirect_uri: string ) {
+    if (this.endpoint == null) {
+      throw new Error('oidc not initialized')
+    }
+    const params = {
+      'client_id': client_id,
+      'code': code,
+      'redirect_uri': redirect_uri,
+      'grant_type': 'authorization_code'
+    }
+
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: this.endpoint.token_endpoint,
+      data: querystring.stringify(params),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    await axios(config)
+      .then((response) => {
+        this.token = {
+          access_token: response.data.access_token,
+          expires_in: response.data.expires_in,
+          refresh_expires: response.data.refresh_expires,
+          refresh_token: response.data.refresh_token,
+          session_state: response.data.session_state,
+          scope: response.data.scope,
+          token_type: response.data.token_type,
+          "not-before-policy": response.data['not-before-policy'],
+        }
+        this.client_id = client_id
+      })
+      .catch((error) => {
+        console.log(error)
+        throw Error(error);
+      })
+  }
+
+  async getUserInfo(access_token: string) {
     if (this.endpoint == null || this.token == null) {
       throw new Error('oidc not initialized')
     }
@@ -105,7 +153,7 @@ export default class oidc {
       method: 'get',
       url: this.endpoint.userinfo_endpoint,
       headers: {
-        'Authorization': 'bearer '+this.token?.access_token
+        'Authorization': 'bearer '+access_token
       }
     }
     await axios(config)
@@ -157,6 +205,39 @@ export default class oidc {
         this.isTokenValid = true
       })
       .catch((error) => {
+        console.log(error)
+        this.isTokenValid = false
+      })
+  }
+
+  // does not work, error: 'No refresh token'
+  async logout(access_token: string, redirect_uri: string) {
+    if (this.endpoint == null) {
+      throw new Error('oidc not initialized')
+    }
+
+    const params = {
+      'client_id': this.client_id,
+      'redirect_uri': redirect_uri,
+      'reresh_token': this.token.refresh_token
+    }
+    console.log('logout refresh_token:'+this.token.refresh_token)
+
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: this.endpoint.end_session_endpoint,
+      data: querystring.stringify(params),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'bearer '+access_token
+      }
+    }
+    await axios(config)
+      .then((response) => {
+        console.log('logout success')
+      })
+      .catch((error) => {
+        console.log(error)
         this.isTokenValid = false
       })
   }

@@ -1,37 +1,44 @@
 import oidc from './src/oidc'
+import express from "express";
+import hbs from 'express-handlebars';
+import cookieParser from 'cookie-parser';
 
 const o = new oidc('http://localhost:8080/auth') // oidc endpoint
+const client_id = 'demo-backend'
 
 async function demo() {
     await o.init('demo')  // realm
-    await o.getToken('demo-backend', 'admin', 'admin')
-    await o.getUserInfo()
+    await o.getToken(client_id, 'admin', 'admin')
+    let access_token = o.token.access_token
+    await o.getUserInfo(access_token)
     console.log('userinfo ' + JSON.stringify(o.userInfo))
-    console.log('isAuthenticated '+o.isAuthenticated())
-    console.log('user roles '+o.getRoles(o.token.access_token))
+    console.log('isAuthenticated ' + o.isAuthenticated())
+    console.log('user roles ' + o.getRoles(access_token))
     if (o.token != null) {
         const valid_token = o.token.access_token
         await o.isAccessTokenValid(valid_token)
-        console.log('valid token valid '+o.isTokenValid)
-        const invalid_token = o.token.access_token.replace('A','B')
+        console.log('valid token valid ' + o.isTokenValid)
+        const invalid_token = o.token.access_token.replace('A', 'B')
         await o.isAccessTokenValid(invalid_token)
-        console.log('invalid token valid '+o.isTokenValid)
+        console.log('invalid token valid ' + o.isTokenValid)
     }
     public_resource()
     protected_resource()
-    await o.getToken('demo-backend', 'user', 'user')
-    await o.getUserInfo()
+    await o.getToken(client_id, 'user', 'user')
+    access_token = o.token.access_token
+    await o.getUserInfo(access_token)
     console.log('userinfo ' + JSON.stringify(o.userInfo))
-    console.log('isAuthenticated '+o.isAuthenticated())
-    console.log('user roles '+o.getRoles(o.token.access_token))
+    console.log('isAuthenticated ' + o.isAuthenticated())
+    console.log('user roles ' + o.getRoles(access_token))
     protected_resource()
     console.log('get token for dummy user')
     try {
-        await o.getToken('demo-backend', 'guest', 'guest')
-        await o.getUserInfo()
+        await o.getToken(client_id, 'guest', 'guest')
+        access_token = o.token.access_token
+        await o.getUserInfo(access_token)
         console.log('userinfo ' + JSON.stringify(o.userInfo))
-        console.log('isAuthenticated '+o.isAuthenticated())
-        console.log('user roles '+o.getRoles(o.token.access_token))
+        console.log('isAuthenticated ' + o.isAuthenticated())
+        console.log('user roles ' + o.getRoles(access_token))
         protected_resource()
     } catch (error) {
         console.log(error)
@@ -51,4 +58,99 @@ const protected_resource = () => {
         console.log('protected resource is unavailable')
     }
 }
+
+const app = express();
+
+app.use(cookieParser())
+
+app.set('view engine', 'hbs');
+
+app.engine('hbs', hbs({
+    extname: 'hbs',
+    partialsDir: 'dist/views/partials'
+}));
+
+// define a route handler for the default home page
+// request might be authenticated
+// - by req.query.code from Authentication Flow
+// - by token in cookie added when redirected from anther page
+// - by Authorization header
+app.get("/", async (req, res) => {
+    let access_token = ''
+    if (req.cookies.token) { // check if cookie present
+        access_token = req.cookies.token
+        console.log('access token cookie '+access_token)
+    } else if (req.headers.authorization) { // check if header present
+        const auth = req.headers.authorization
+        if (auth.startsWith('bearer')) {
+            access_token = auth.replace('bearer ','')
+            console.log('access token header '+access_token)
+        }
+    } else if(req.query.code) { // check code
+        await o.getTokenAuth(client_id, req.query.code as string, 'http://localhost:3000')
+        access_token = o.token.access_token;
+        console.log('access token auth '+access_token)
+    } else {
+        console.log('redirecting...')
+        res.redirect(o.endpoint?.authorization_endpoint+'?client_id='+client_id+'&redirect_uri=http://localhost:3000&response_type=code&scope=openid');
+    }
+    if (access_token) {
+        console.log('access token '+access_token)
+        await o.getUserInfo(access_token)
+        await o.getRoles(access_token)
+        res.send("Hello world authorized! User "+o.userInfo?.preferred_username+" roles: "+o.getRoles(access_token));
+    } else {
+        res.sendStatus(401)
+    }
+});
+
+
+app.get('/hbs', (req, res, next) => {
+    res.render('home', { layout: 'default', template: 'home-template' });
+});
+
+app.get('/user', async (req, res, next) => {
+    console.log(req)
+    const code = req.query.code as string;
+    console.log('got code '+code)
+    await o.getTokenAuth(client_id, code, 'http://localhost:3000/user')
+    const access_token = o.token.access_token
+    console.log('got token '+access_token)
+    await o.isAccessTokenValid(access_token)
+    console.log('code valid '+o.isTokenValid)
+    await o.getUserInfo(access_token)
+    console.log('user info '+JSON.stringify(o.userInfo))
+    const roles = o.getRoles(access_token)
+    console.log('user roles '+roles)
+
+    res.render('home', { layout: 'default', template: 'home-template' });
+    console.log('>>>>>>>>>>>>>> logout - not working >>>>>>>>>>>>>>>')
+    await o.logout(access_token, 'http://localhost:3000')
+});
+
+app.get('/admin', (req, res, next) => {
+    res.render('home', { layout: 'default', template: 'home-template' });
+});
+
+app.get('/redirect', (req, res, next) => {
+    res.cookie('token', o.token.access_token, {
+       maxAge: 60000,
+    })
+    res.redirect('/')
+});
+
+
+
+const port = 3000; // default port to listen
+
+// console.log(typeof null)
+// enum Color {Red = 1, Green, Blue}
+// const colorName: string = Color[2];
+
+// console.log(Color.Green);
+// start the Express server
+console.log('Starting express')
+app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}`);
+});
 
