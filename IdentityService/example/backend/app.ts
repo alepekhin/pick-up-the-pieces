@@ -76,37 +76,21 @@ app.engine('hbs', hbs({
 // - by token in cookie added when redirected from anther page
 // - by Authorization header
 app.get("/", async (req, res) => {
-    let access_token = ''
-    if (req.cookies.token) { // check if cookie present
-        access_token = req.cookies.token
-        console.log('access token cookie '+access_token)
-    } else if (req.headers.authorization) { // check if header present
-        const auth = req.headers.authorization
-        if (auth.startsWith('bearer')) {
-            access_token = auth.replace('bearer ','')
-            console.log('access token header '+access_token)
-        }
-    } else if(req.query.code) { // check code
-        await o.getTokenAuth(client_id, req.query.code as string, 'http://localhost:3000')
-        access_token = o.token.access_token;
-        console.log('access token auth '+access_token)
-    } else {
-        console.log('redirecting...')
-        res.redirect(o.endpoint?.authorization_endpoint+'?client_id='+client_id+'&redirect_uri=http://localhost:3000&response_type=code&scope=openid');
-    }
-    if (access_token) {
-        console.log('access token '+access_token)
-        await o.getUserInfo(access_token)
-        await o.getRoles(access_token)
-        res.send("Hello world authorized! User "+o.userInfo?.preferred_username+" roles: "+o.getRoles(access_token));
+    const auth = await o.isAuthorized(req, res, 'http://localhost:3000', 'admin')
+    if (auth) {
+        res.send('Hello world! This page for admin only! ')
     } else {
         res.sendStatus(401)
     }
 });
 
-
-app.get('/hbs', (req, res, next) => {
-    res.render('home', { layout: 'default', template: 'home-template' });
+app.get('/hbs', async (req, res, next) => {
+    const auth = await o.isAuthorized(req, res, 'http://localhost:3000/hbs')
+    if (auth) {
+        res.render('home', { layout: 'default', template: 'home-template' });
+    } else {
+        res.sendStatus(401)
+    }
 });
 
 app.get('/user', async (req, res, next) => {

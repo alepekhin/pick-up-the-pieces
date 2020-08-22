@@ -242,4 +242,36 @@ export default class oidc {
       })
   }
 
+  isAuthorized = async (req:any, res:any, url:string, role?:string) => {
+    let access_token = ''
+    if (req.cookies.token) { // check if cookie present
+        access_token = req.cookies.token
+    } else if (req.headers.authorization) { // check if header present
+        const auth = req.headers.authorization
+        if (auth.startsWith('bearer')) {
+            access_token = auth.replace('bearer ','')
+        }
+    } else if(req.query.code) { // check code
+        await this.getTokenAuth(this.client_id as string, req.query.code as string, url)
+        access_token = this.token.access_token;
+    } else {
+        console.log('redirecting...')
+        res.redirect(this.endpoint?.authorization_endpoint+'?client_id='+this.client_id+'&redirect_uri='+url+'&response_type=code&scope=openid');
+    }
+    if (access_token) {
+        const roles =  this.getRoles(access_token)
+        if (role) {
+            if (roles.includes(role)) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    } else {
+        return false
+    }
+  }
+
 }
