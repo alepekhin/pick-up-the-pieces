@@ -2,15 +2,21 @@
   "name": "service-nodejs",
   "version": "0.0.1",
   "scripts": {
-    "start": "node app.js",
-    "test": "tape test/*.js"
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "axios": "0.20.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "keycloak-connect": "11.0.0",
-    "body-parser": "^1.13.3",
-    "express": "^4.13.3",
-    "express-session": "^1.14.2",
-    "cors": "^2.8.1"
+    "querystring": "^0.2.0"
   },
   "devDependencies": {
     "keycloak-request-token": "^0.1.0",
@@ -25,6 +31,8 @@
     "jsdoc": "^3.6.5",
     "jshint": "^2.12.0",
     "tape": "^5.0.1",
-    "roi": "^0.18.0"
+    "roi": "^0.18.0",
+    "typescript": "^4.0.2",
+    "tslint": "^6.1.3"
   }
 }

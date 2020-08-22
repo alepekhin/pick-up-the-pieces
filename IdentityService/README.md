@@ -24,6 +24,23 @@ Admin console is available at http://localhost:8080/auth/admin
 
 ## Testing the client
 
+- create client `demo-backend`
+- set `Redirect URL` to `http://localhost:3000/*`
+- set `Web origins` to `*`
+- add roles to client `admin` and `user`
+- create users `admin` and `user` with passwords `admin` and `user` correspondingly
+- for each user in `Role mapping` tab select `Client Roles` as `demo-backend` and assing role `admin` to user `admin` and role `user` to user `user`
+- in client tab go to `Role Mappers` and add built-in 
+- username
+- realm-roles
+- client-roles
+- profile
+
+
+
+Test client:
+
+
 ```curl  -d "client_id=demo-backend" -d "username=admin" -d "password=admin" -d "grant_type=password" "http://localhost:8080/auth/realms/demo/protocol/openid-connect/token"
 
 ```
@@ -34,9 +51,28 @@ the output is JWT token:
 ```
 
 
-The folder "example" contains working example copied from other sources.
+The folder "example" contains working example backend and frontend copied from other sources on github.
 
-TODO: apply this example to protect nest.js and next.js applications in Demo folder
+- start backend `npm start`
+- start frontend `npm start`
+
+
+Here’s a list of OIDC endpoints that the Keycloak publishes. These URLs are useful if you are using a non-Keycloak client adapter to talk OIDC with the auth server. These are all relative URLs and the root of the URL being the HTTP(S) protocol, hostname, and usually path prefixed with /auth: i.e. https://localhost:8080/auth
+
+`/realms/{realm-name}/protocol/openid-connect/token`
+This is the URL endpoint for obtaining a temporary code in the Authorization Code Flow or for obtaining tokens via the Implicit Flow, Direct Grants, or Client Grants.
+
+`/realms/{realm-name}/protocol/openid-connect/auth`
+This is the URL endpoint for the Authorization Code Flow to turn a temporary code into a token.
+
+`/realms/{realm-name}/protocol/openid-connect/logout`
+This is the URL endpoint for performing logouts.
+
+`/realms/{realm-name}/protocol/openid-connect/userinfo`
+This is the URL endpoint for the User Info service described in the OIDC specification.
+
+TODO: write `axios` calls to that endpoints, I think that is all we need for OIDC
+
 
 
   

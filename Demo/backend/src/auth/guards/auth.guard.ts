@@ -33,12 +33,16 @@ export class AuthGuard implements CanActivate {
     );
 
     // If unprotected is set skip Keycloak authentication
+    console.log('inside canActivate 1')
     if (isUnprotected) {
       return true;
     }
+    console.log('inside canActivate 2')
 
     const request = context.switchToHttp().getRequest();
+    console.log('inside canActivate 3 ')
     const jwt =  this.extractJwt(request.headers);
+    console.log('inside canActivate 4')
 
     try {
       // commented as validateAccessToken(jwt) always returns 403

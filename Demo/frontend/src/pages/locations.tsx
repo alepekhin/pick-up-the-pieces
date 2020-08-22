@@ -1,5 +1,6 @@
 import React from 'react'
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client'
+import { withKeycloak } from '@react-keycloak/nextjs'
 
 const QUERY = gql`
   {
@@ -10,10 +11,10 @@ const QUERY = gql`
 const Locations = () => {
 
 
-    const { loading, error, data } = useQuery(QUERY);
+    const { loading, error, data } = useQuery(QUERY)
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error :(</p>
 
     return (
         <div>
@@ -27,4 +28,4 @@ const Locations = () => {
     )
 }
 
-export default Locations
+export default withKeycloak(Locations)

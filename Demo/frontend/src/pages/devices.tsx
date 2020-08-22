@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client'
 
 const QUERY = gql`
   {
@@ -10,10 +10,10 @@ const QUERY = gql`
 const Devices = () => {
 
 
-    const { loading, error, data } = useQuery(QUERY);
+    const { loading, error, data } = useQuery(QUERY)
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error :(</p>
 
     return (
         <div>

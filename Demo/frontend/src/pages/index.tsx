@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link, Router, Route } from 'react-router-dom'
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client'
 import Devices from './devices'
-import { createMemoryHistory } from 'history';
-import Locations from './locations';
-import Associations from './associations';
+import { createMemoryHistory } from 'history'
+import Locations from './locations'
+import Associations from './associations'
+import { withKeycloak } from '@react-keycloak/nextjs'
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -14,7 +15,7 @@ const client = new ApolloClient({
 
 const history = createMemoryHistory();
 
-export default function Home() {
+function Home() {
   return (
     <ApolloProvider client={client}>
       <Devices />
@@ -23,3 +24,5 @@ export default function Home() {
     </ApolloProvider>
   )
 }
+
+export default withKeycloak(Home)
