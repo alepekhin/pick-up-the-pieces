@@ -44,7 +44,6 @@ export default class oidc {
     }
     await axios(config)
       .then((response) => {
-        // handle success
         this.endpoint = {
           token_endpoint: response.data.token_endpoint,
           authorization_endpoint: response.data.authorization_endpoint,
@@ -54,11 +53,8 @@ export default class oidc {
         }
       })
       .catch((error) => {
-        // handle error
-        console.log(error);
+        throw Error(error);
       })
-      .then(() => {
-      });
   }
 
   // Direct Access Grant
@@ -83,7 +79,6 @@ export default class oidc {
     }
     await axios(config)
       .then((response) => {
-        // handle success
         this.token = {
           access_token: response.data.access_token,
           expires_in: response.data.expires_in,
@@ -97,11 +92,8 @@ export default class oidc {
         this.client_id = client_id
       })
       .catch((error) => {
-        // handle error
-        console.log(error);
+        throw Error(error);
       })
-      .then(() => {
-      });
   }
 
   async getUserInfo() {
@@ -118,7 +110,6 @@ export default class oidc {
     }
     await axios(config)
       .then((response) => {
-        // handle success
         this.userInfo = {
           sub: response.data.sub,
           name: response.data.name,
@@ -127,11 +118,8 @@ export default class oidc {
         }
       })
       .catch((error) => {
-        // handle error
-        console.log(error);
+        throw Error(error);
       })
-      .then(() => {
-      });
   }
 
   isAuthenticated() {
@@ -169,7 +157,6 @@ export default class oidc {
         this.isTokenValid = true
       })
       .catch((error) => {
-        // handle error
         this.isTokenValid = false
       })
   }

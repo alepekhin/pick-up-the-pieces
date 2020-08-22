@@ -25,6 +25,17 @@ async function demo() {
     console.log('isAuthenticated '+o.isAuthenticated())
     console.log('user roles '+o.getRoles(o.token.access_token))
     protected_resource()
+    console.log('get token for dummy user')
+    try {
+        await o.getToken('demo-backend', 'guest', 'guest')
+        await o.getUserInfo()
+        console.log('userinfo ' + JSON.stringify(o.userInfo))
+        console.log('isAuthenticated '+o.isAuthenticated())
+        console.log('user roles '+o.getRoles(o.token.access_token))
+        protected_resource()
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 demo()
