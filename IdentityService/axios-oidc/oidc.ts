@@ -243,6 +243,16 @@ export default class oidc {
       })
   }
 
+  /*
+  Method working for express app, assuming in caller code
+  
+  import express,{Request,Response} from "express";
+  import cookieParser from 'cookie-parser';
+  
+  const app = express();
+  app.use(cookieParser())
+  
+  */
   isAuthorized = async (req:Request, res:Response, url:string, role?:string) => {
     let access_token = ''
     if (req.cookies.token) { // check if cookie present
