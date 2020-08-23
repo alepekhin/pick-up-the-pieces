@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import querystring from 'querystring'
+import {Request,Response} from "express";
 
 export interface Endpoint {
   token_endpoint: string
@@ -242,7 +243,7 @@ export default class oidc {
       })
   }
 
-  isAuthorized = async (req:any, res:any, url:string, role?:string) => {
+  isAuthorized = async (req:Request, res:Response, url:string, role?:string) => {
     let access_token = ''
     if (req.cookies.token) { // check if cookie present
         access_token = req.cookies.token

@@ -1,5 +1,5 @@
 import oidc from 'oidc'
-import express from "express";
+import express,{Request,Response} from "express";
 import hbs from 'express-handlebars';
 import cookieParser from 'cookie-parser';
 
@@ -75,7 +75,7 @@ app.engine('hbs', hbs({
 // - by req.query.code from Authentication Flow
 // - by token in cookie added when redirected from anther page
 // - by Authorization header
-app.get("/", async (req, res) => {
+app.get("/", async (req:Request, res:Response) => {
     const auth = await o.isAuthorized(req, res, 'http://localhost:3000', 'admin')
     if (auth) {
         res.send('Hello world! This page for admin only! ')
