@@ -41,6 +41,8 @@ async function bootstrap(): Promise<void> {
   await app.listen(port, () =>
     console.log(`🚀 App listening on the port ${port}`),
   )
+  let url = await app.getUrl()
+  console.log('application url '+url)
 }
 
 void bootstrap()

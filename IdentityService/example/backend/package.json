@@ -21,7 +21,8 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
-    "querystring": "^0.2.0"
+    "querystring": "^0.2.0",
+    "oidc": "file:/home/alepekhin/Me/pick-up-the-pieces/IdentityService/axios-oidc"
   },
   "devDependencies": {
     "eslint": "^7.7.0",

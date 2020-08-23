@@ -1,4 +1,4 @@
-import oidc from './src/oidc'
+import oidc from 'oidc'
 import express from "express";
 import hbs from 'express-handlebars';
 import cookieParser from 'cookie-parser';
