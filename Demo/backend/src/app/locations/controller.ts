@@ -1,17 +1,16 @@
-import { Controller, Get, Delete, Put, Post, Param, Redirect, Res, Response, Query } from '@nestjs/common';
-import { Roles, Unprotected } from 'src/auth';
+import { Controller, Get, Delete, Put, Post, Param, Redirect, Res, Response, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
  
 @Controller()
+@UseGuards(AuthGuard)
 export class ProductController {
  
   @Get('/service/public')
-  @Unprotected()
   async route() {
     return "i am public"
   }
 
   @Get('/service/admin')
-  @Roles('admin')
   async findAll() {
     return {"view":"admin"}
   }

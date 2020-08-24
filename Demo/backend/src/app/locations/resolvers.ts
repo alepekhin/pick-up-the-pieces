@@ -1,19 +1,16 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Location, LocationInput } from '../../graphql'
 import knex from '../database/db'
-import { Roles } from 'src/auth';
 
 @Resolver()
 export class LocationsResolver {
 
   @Query()
-  @Roles('admin')
   async locations(): Promise<Location[]> {
     return knex('locations')
   }
 
   @Mutation()
-  @Roles('admin')
   async createLocation(
     @Args('location') location: LocationInput,
   ): Promise<string> {
@@ -22,7 +19,6 @@ export class LocationsResolver {
   }
 
   @Mutation()
-  @Roles('admin')
   async deleteLocation(@Args('location') location: string): Promise<string> {
     await knex('locations').where('location', location).del()
     return 'OK'

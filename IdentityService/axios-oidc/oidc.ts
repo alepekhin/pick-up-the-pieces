@@ -1,13 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import querystring from 'querystring'
-import {Request,Response} from "express";
 
 export interface Endpoint {
   token_endpoint: string
   authorization_endpoint: string
-  end_session_endpoint: string
   userinfo_endpoint: string
-  introspection_endpoint: string
+  end_session_endpoint: string
 }
 
 /*
@@ -41,8 +39,6 @@ export default class oidc {
   endpoint: Endpoint | null = null
   token: Token  = {access_token: ''}
   userInfo: UserInfo | null = null
-  client_id: string | null = null
-  isTokenValid: boolean = false
 
   constructor(private url: string) { }
 
@@ -56,9 +52,8 @@ export default class oidc {
         this.endpoint = {
           token_endpoint: response.data.token_endpoint,
           authorization_endpoint: response.data.authorization_endpoint,
-          end_session_endpoint: response.data.end_session_endpoint,
           userinfo_endpoint: response.data.userinfo_endpoint,
-          introspection_endpoint: response.data.introspection_endpoint
+          end_session_endpoint: response.data.end_session_endpoint
         }
       })
       .catch((error) => {
@@ -66,7 +61,7 @@ export default class oidc {
       })
   }
 
-  // Direct Access Grant
+  // Direct Access Grant, typically not used
   async getToken(client_id: string, username: string, password: string) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
@@ -96,9 +91,8 @@ export default class oidc {
           session_state: response.data.session_state,
           scope: response.data.scope,
           token_type: response.data.token_type,
-          "not-before-policy": response.data['not-before-policy'],
+          "not-before-policy": response.data['not-before-policy']
         }
-        this.client_id = client_id
       })
       .catch((error) => {
         throw Error(error);
@@ -135,9 +129,8 @@ export default class oidc {
           session_state: response.data.session_state,
           scope: response.data.scope,
           token_type: response.data.token_type,
-          "not-before-policy": response.data['not-before-policy'],
+          "not-before-policy": response.data['not-before-policy']
         }
-        this.client_id = client_id
       })
       .catch((error) => {
         console.log(error)
@@ -145,6 +138,9 @@ export default class oidc {
       })
   }
 
+  /*
+  Returns userInfo and can be used for token validation
+  */
   async getUserInfo(access_token: string) {
     if (this.endpoint == null || this.token == null) {
       throw new Error('oidc not initialized')
@@ -171,56 +167,28 @@ export default class oidc {
       })
   }
 
-  isAuthenticated() {
-    return this.token != null
-  }
-
-  getRoles(access_token: string) {
-    if (this.client_id == null) {
-      throw Error('client_id not defined')
-    }
+  async getRoles(access_token: string, client_id: string) {
+    await this.getUserInfo(access_token) // validate token
     const token: Token = {
       access_token
     }
     const accessToken = JSON.parse(
       Buffer.from(JSON.stringify(token).split('.')[1], 'base64').toString()
     )
-    const roles: string[] = accessToken.resource_access[this.client_id].roles
+    const roles: string[] = accessToken.resource_access[client_id].roles
     return roles
   }
 
-  async isAccessTokenValid(access_token: string) {
-    if (this.endpoint == null) {
-      throw new Error('oidc not initialized')
-    }
-
-    const config: AxiosRequestConfig = {
-      method: 'get',
-      url: this.endpoint.userinfo_endpoint,
-      headers: {
-        'Authorization': 'bearer '+access_token
-      }
-    }
-    await axios(config)
-      .then((response) => {
-        this.isTokenValid = true
-      })
-      .catch((error) => {
-        console.log(error)
-        this.isTokenValid = false
-      })
-  }
-
   // does not work, error: 'No refresh token'
-  async logout(access_token: string, redirect_uri: string) {
+  async logout(access_token: string, refresh_token:string, client_id:string, redirect_uri: string) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
 
     const params = {
-      'client_id': this.client_id,
+      'client_id': client_id,
       'redirect_uri': redirect_uri,
-      'reresh_token': this.token.refresh_token
+      'refresh_token': refresh_token
     }
     console.log('logout refresh_token:'+this.token.refresh_token)
 
@@ -239,50 +207,8 @@ export default class oidc {
       })
       .catch((error) => {
         console.log(error)
-        this.isTokenValid = false
       })
   }
 
-  /*
-  Method working for express app, assuming in caller code
-  
-  import express,{Request,Response} from "express";
-  import cookieParser from 'cookie-parser';
-  
-  const app = express();
-  app.use(cookieParser())
-  
-  */
-  isAuthorized = async (req:Request, res:Response, url:string, role?:string) => {
-    let access_token = ''
-    if (req.cookies.token) { // check if cookie present
-        access_token = req.cookies.token
-    } else if (req.headers.authorization) { // check if header present
-        const auth = req.headers.authorization
-        if (auth.startsWith('bearer')) {
-            access_token = auth.replace('bearer ','')
-        }
-    } else if(req.query.code) { // check code
-        await this.getTokenAuth(this.client_id as string, req.query.code as string, url)
-        access_token = this.token.access_token;
-    } else {
-        console.log('redirecting...')
-        res.redirect(this.endpoint?.authorization_endpoint+'?client_id='+this.client_id+'&redirect_uri='+url+'&response_type=code&scope=openid');
-    }
-    if (access_token) {
-        const roles =  this.getRoles(access_token)
-        if (role) {
-            if (roles.includes(role)) {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return true
-        }
-    } else {
-        return false
-    }
-  }
 
 }

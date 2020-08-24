@@ -1,4 +1,4 @@
-# Backend service protected by Keycloak
+# axios-oidc usage example
 
 - with given request to backend endpoint get Authorization header
   and obtain jwt
