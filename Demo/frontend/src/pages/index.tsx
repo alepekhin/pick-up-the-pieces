@@ -1,16 +1,34 @@
 import React from 'react'
-import { Link, Router, Route } from 'react-router-dom'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client'
 import Devices from './devices'
 import { createMemoryHistory } from 'history'
 import Locations from './locations'
 import Associations from './associations'
-import { withKeycloak } from '@react-keycloak/nextjs'
+import { setContext } from '@apollo/client/link/context';
+import Prot from './prot'
 
+/*
+const httpLink = createHttpLink({
+  uri: '/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token');
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+});
+*/
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  //link: authLink.concat(httpLink)
 });
 
 const history = createMemoryHistory();
@@ -18,6 +36,7 @@ const history = createMemoryHistory();
 function Home() {
   return (
     <ApolloProvider client={client}>
+      <Prot />
       <Devices />
       <Locations />
       <Associations />
@@ -25,4 +44,4 @@ function Home() {
   )
 }
 
-export default withKeycloak(Home)
+export default Home

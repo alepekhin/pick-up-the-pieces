@@ -1,11 +1,14 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { Location, LocationInput } from '../../graphql'
 import knex from '../database/db'
+import { UseGuards } from '@nestjs/common'
+import { AuthGuard } from '../guards/auth.guard'
 
 @Resolver()
 export class LocationsResolver {
 
   @Query()
+  //@UseGuards(AuthGuard)
   async locations(): Promise<Location[]> {
     return knex('locations')
   }

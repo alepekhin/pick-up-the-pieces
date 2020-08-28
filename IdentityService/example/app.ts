@@ -1,6 +1,6 @@
 import oidc from 'oidc'
-import express, { Request, Response } from "express";
-import cookieParser from 'cookie-parser';
+import express, { Request, Response } from "express"
+import cookieParser from 'cookie-parser'
 
 const port = 3000;
 
@@ -109,7 +109,7 @@ const isAuthorized = async (req: Request, res: Response, url: string, role?: str
     }
     console.log('redirecting to login page')
     res.redirect(o.endpoint?.authorization_endpoint + `?client_id=${client_id}&redirect_uri=${url}&response_type=code&scope=openid`);
-    return false;
+    return false
 }
 
 app.get('/public', async (req, res, next) => {

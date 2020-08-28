@@ -34,13 +34,19 @@ export interface UserInfo {
   email: string
 }
 
+export interface OidcState {
+  endpoint: Endpoint | null
+  token: Token | null
+  userInfo: UserInfo | null
+}
+
 export default class oidc {
 
   endpoint: Endpoint | null = null
   token: Token  = {access_token: ''}
   userInfo: UserInfo | null = null
 
-  constructor(private url: string) { }
+  constructor(private url: string) {}
 
   async init(realm: string) {
     const config: AxiosRequestConfig = {
@@ -59,6 +65,13 @@ export default class oidc {
       .catch((error) => {
         throw Error(error);
       })
+  }
+
+  getLoginURL = (client_id:string, redirect_uri:string) => {
+    if (this.endpoint == null) {
+      throw new Error('oidc not initialized')
+    }
+    return `${this.endpoint.authorization_endpoint}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=openid`
   }
 
   // Direct Access Grant, typically not used
@@ -133,7 +146,7 @@ export default class oidc {
         }
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
         throw Error(error);
       })
   }
@@ -179,7 +192,6 @@ export default class oidc {
     return roles
   }
 
-  // does not work, error: 'No refresh token'
   async logout(access_token: string, refresh_token:string, client_id:string, redirect_uri: string) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
