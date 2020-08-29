@@ -8,7 +8,7 @@ import { AuthGuard } from '../guards/auth.guard'
 export class LocationsResolver {
 
   @Query()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   async locations(): Promise<Location[]> {
     return knex('locations')
   }

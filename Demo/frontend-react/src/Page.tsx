@@ -3,11 +3,19 @@ import { useStore, useSelector } from "react-redux"
 import oidc, { Token, Endpoint, OidcState } from "oidc"
 import { identityServiceURL, realm, client_id } from "./App"
 import { OidcStore } from "./OidcSlice"
+import { useQuery, gql } from '@apollo/client'
+
+const QUERY = gql`
+  {
+    locations {location}
+  }
+`
 
 const Page = () => {
 
     const [roles, setRoles] = useState<string[]>([])
-    const oidcState = useSelector((item:OidcStore) => item.oidc)
+    const oidcState = useSelector((item: OidcStore) => item.oidc)
+    const { loading, error, data } = useQuery(QUERY)
 
     useEffect(
         () => {
@@ -28,12 +36,23 @@ const Page = () => {
         }
     )
 
-    console.log('Page: roles '+JSON.stringify(roles))
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error :(</p>
+
+    console.log('Page: roles ' + JSON.stringify(roles))
 
     if (roles.includes('admin')) {
         return (
             <div>
                 <h1>This page is available for admins only</h1>
+                <div>
+                    Locations
+                    <ul>
+                        {data.locations.map(({ location }:any) => (
+                            <li>{location}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         )
     } else {

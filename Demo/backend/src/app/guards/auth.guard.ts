@@ -52,8 +52,8 @@ export class AuthGuard implements CanActivate {
             console.log('inside AuthGuard, access token from cookie '+access_token)
         } else if (req.headers.authorization) { // check if header present
             const auth = req.headers.authorization
-            if (auth.startsWith('bearer')) {
-                access_token = auth.replace('bearer ', '')
+            if (auth.toLowerCase().startsWith('bearer')) {
+                access_token = auth.substring(7)
                 console.log('inside AuthGuard, access token from bearer '+access_token)
             }
         } else if (req.query.code) { // check code

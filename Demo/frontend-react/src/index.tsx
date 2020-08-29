@@ -8,9 +8,9 @@ import { Provider } from 'react-redux';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={globalStore}>
-      <App />
-    </Provider>
+        <Provider store={globalStore}>
+        <App />
+        </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
