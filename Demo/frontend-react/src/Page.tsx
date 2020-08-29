@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { useStore, useSelector } from "react-redux"
-import oidc, { Token, Endpoint, OidcState } from "oidc"
-import { identityServiceURL, realm, client_id } from "./App"
+import { useSelector } from "react-redux"
+import oidc, { Token, Endpoint } from "oidc"
+import { identityServiceURL, client_id } from "./App"
 import { OidcStore } from "./OidcSlice"
 import { useQuery, gql } from '@apollo/client'
 
@@ -37,7 +37,7 @@ const Page = () => {
     )
 
     if (loading) return <p>Loading...</p>
-    if (error) return <p>Error :(</p>
+    if (error) return <p>Error: {JSON.stringify(error)}</p>
 
     console.log('Page: roles ' + JSON.stringify(roles))
 
