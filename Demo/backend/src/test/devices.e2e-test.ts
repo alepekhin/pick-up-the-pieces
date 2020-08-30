@@ -1,7 +1,8 @@
-import { DevicesModule } from './module'
-import { DevicesResolver } from './resolvers'
+import { DevicesModule } from '../app/devices/module'
+import { DevicesResolver } from '../app/devices/resolvers'
 import { Test } from '@nestjs/testing'
 import { v4 as uuidv4 } from 'uuid'
+import { createTables } from '../app/database/db'
 
 describe('DevicesModule', () => {
 
@@ -9,6 +10,7 @@ describe('DevicesModule', () => {
   const uuid = uuidv4()
 
   beforeEach(async () => {
+    await createTables()
     const moduleRef = await Test.createTestingModule({
       providers: [DevicesResolver],
     }).compile()

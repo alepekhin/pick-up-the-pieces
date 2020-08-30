@@ -1,7 +1,8 @@
-import { LocationsModule } from './module'
-import { LocationsResolver } from './resolvers'
+import { LocationsModule } from '../app/locations/module'
+import { LocationsResolver } from '../app/locations/resolvers'
 import { Test } from '@nestjs/testing'
 import { v4 as uuidv4 } from 'uuid'
+import { createTables } from '../app/database/db'
 
 describe('LocationsModule', () => {
 
@@ -9,6 +10,7 @@ describe('LocationsModule', () => {
   const uuid = uuidv4()
 
   beforeEach(async () => {
+    await createTables()
     const moduleRef = await Test.createTestingModule({
       providers: [LocationsResolver],
     }).compile()
