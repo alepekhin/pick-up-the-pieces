@@ -1,6 +1,6 @@
 # Backend: Nest, GraphQL, MySql
 
-## Prerequisits
+## How to run
 
 - install and run MySql, see [this howto-mysql](howto-mysql.md)
 - install and run keycloak, see [this howto-keycloak](howto-keycloak.md) 
@@ -14,32 +14,23 @@ Then execute
 
 - npm start
 
-It works without keycloak.
-With KeycloakModule we get
+## How to test
 
-```
-[Nest] 11679   - 08/10/2020, 1:59:11 PM   [ExceptionsHandler] Cannot read property 'cookies' of undefined +7919ms
-TypeError: Cannot read property 'cookies' of undefined
-    at AuthGuard.<anonymous> (/home/alepekhin/Me/pick-up-the-pieces/Demo/backend/node_modules/nest-keycloak-connect/guards/auth.guard.js:55:65)
-    at Generator.next (<anonymous>)
-    at /home/alepekhin/Me/pick-up-the-pieces/Demo/backend/node_modules/nest-keycloak-connect/guards/auth.guard.js:20:71
-    at new Promise (<anonymous>)
-```
+There 2 kinds of tests here - unit tests and e2e tests   
+Unit tests do not require mysql and executed with sqlite3   
+e2e tests run with mysql and create tables and sample data
 
-How to solve it?
+- npm test
 
-- First read https://docs.nestjs.com/techniques/security
-  and add Helmet `
+will run unit tests
 
-- npm i --save helmet
-- npm i --save @types/helmet
+- npm run test:e2e
 
-Does not help. Then install
+will run e2e tests
 
-- npm install --save cookie-parser
-- npm install --save @types/cookie-parser
+Test's code is in the folder `src/test`    
+I don't like polluting the main code with tests
 
-Now it does not show errors but hangs.
 
 
 
