@@ -12,8 +12,8 @@ describe('AssociationsModule', () => {
   let associationsResolver: AssociationsResolver
   let devicesResolver: DevicesResolver
   let locationsResolver: LocationsResolver
-  const locationuuid = 'location-'+uuidv4().substring(0,4)
-  const deviceuuid = 'device-'+uuidv4().substring(0,4)
+  const locationuuid = 'location-' + uuidv4().substring(0, 4)
+  const deviceuuid = 'device-' + uuidv4().substring(0, 4)
 
   beforeEach(async () => {
     await createTables()
@@ -25,25 +25,21 @@ describe('AssociationsModule', () => {
     locationsResolver = moduleRef.get(LocationsResolver)
   })
 
-  it('should create, find and delete association', async () => {
-    // create device
-    const device = { device: deviceuuid }
-    await devicesResolver.createDevice(device)
-    // create location
-    const location = { location: locationuuid }
-    await locationsResolver.createLocation(location)
-    // create association
-    const association = { location: locationuuid, device: deviceuuid }
-    await associationsResolver.createAssociation(association as AssociationInput)
-    // test
-    let associations = await associationsResolver.associations()
-    expect(associations).toEqual(expect.arrayContaining([association]))
-    //await associationsResolver.deleteAssociation(association as AssociationInput)
-    //associations = await associationsResolver.associations()
-    //expect(associations).not.toEqual(expect.arrayContaining([association]))
-    // cleaning
-    //await devicesResolver.deleteDevice(deviceuuid)
-    //await locationsResolver.deleteLocation(locationuuid)
+  it('should create 1000 associations', async () => {
+    for (let i = 0; i < 1000; i++) {
+      // create device
+      const device = { device: deviceuuid }
+      await devicesResolver.createDevice(device)
+      // create location
+      const location = { location: locationuuid }
+      await locationsResolver.createLocation(location)
+      // create association
+      const association = { location: locationuuid, device: deviceuuid }
+      await associationsResolver.createAssociation(association as AssociationInput)
+      // test
+      let associations = await associationsResolver.associations()
+      expect(associations).toEqual(expect.arrayContaining([association]))
+    }
   })
 
   it('should create module', () => {
