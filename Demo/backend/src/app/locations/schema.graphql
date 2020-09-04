@@ -7,6 +7,7 @@ input LocationInput {
 }
 
 type Query {
+    locationsCount(filter:String): Int!,
     locations(limit:Int, offset:Int, filter:String): [Location],
     location(id:String): Location
 }

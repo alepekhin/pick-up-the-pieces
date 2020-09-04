@@ -8,6 +8,20 @@ export class AssociationsResolver {
 
   @Query()
   //@Roles('user', 'admin')
+  async associationsCount(
+    @Args('filter') filter?:string
+  ): Promise<any> {
+    let result = []
+    if (filter !== undefined && filter.length > 0 ) {
+      result =  await knex('associations').where('location','like','%'+filter+'%').count()  // [{"count(*)":1276}]
+    } else {  
+      result =  await knex('associations').count()  // [{"count(*)":1276}]
+    }
+    return result[0]['count(*)']
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
   async associations(
     @Args('limit') limit:number,
     @Args('offset') offset:number,
@@ -30,7 +44,7 @@ export class AssociationsResolver {
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async createAssociation(
     @Args('association') association: AssociationInput,
   ): Promise<string> {
@@ -42,7 +56,7 @@ export class AssociationsResolver {
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async deleteAssociation(
     @Args('association') association: AssociationInput,
   ): Promise<string> {

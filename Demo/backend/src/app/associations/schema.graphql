@@ -9,6 +9,7 @@ input AssociationInput {
 }
 
 type Query {
+    associationsCount(filter:String): Int!,
     associations(limit:Int, offset:Int, filter:String): [Association],
     association(location:String, device:String): Association
 }

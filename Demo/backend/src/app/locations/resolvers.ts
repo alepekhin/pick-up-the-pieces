@@ -8,6 +8,20 @@ export class LocationsResolver {
 
   @Query()
   //@Roles('user', 'admin')
+  async locationsCount(
+    @Args('filter') filter?:string
+  ): Promise<any> {
+    let result = []
+    if (filter !== undefined && filter.length > 0 ) {
+      result =  await knex('locations').where('location','like','%'+filter+'%').count()  // [{"count(*)":1276}]
+    } else {  
+      result =  await knex('locations').count()  // [{"count(*)":1276}]
+    }
+    return result[0]['count(*)']
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
   async locations(
     @Args('limit') limit:number,
     @Args('offset') offset:number,
@@ -29,7 +43,7 @@ export class LocationsResolver {
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async createLocation(
     @Args('location') location: LocationInput,
   ): Promise<string> {
@@ -38,7 +52,7 @@ export class LocationsResolver {
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async deleteLocation(@Args('location') location: string): Promise<string> {
     await knex('locations').where('location', location).del()
     return 'OK'

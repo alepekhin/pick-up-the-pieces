@@ -8,6 +8,20 @@ export class DevicesResolver {
 
   @Query()
   //@Roles('user', 'admin')
+  async devicesCount(
+    @Args('filter') filter?:string
+  ): Promise<any> {
+    let result = []
+    if (filter !== undefined && filter.length > 0 ) {
+      result =  await knex('devices').where('location','like','%'+filter+'%').count()  // [{"count(*)":1276}]
+    } else {  
+      result =  await knex('devices').count()  // [{"count(*)":1276}]
+    }
+    return result[0]['count(*)']
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
   async devices(
     @Args('limit') limit:number,
     @Args('offset') offset:number,
@@ -30,14 +44,14 @@ export class DevicesResolver {
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async createDevice(@Args('device') device: DeviceInput): Promise<string> {
     await knex('devices').insert({ device: device.device })
     return 'OK'
   }
 
   @Mutation()
-  @Roles('admin')
+  //@Roles('admin')
   async deleteDevice(@Args('device') device: string): Promise<string> {
     await knex('devices').where('device', device).del()
     return 'OK'

@@ -25,13 +25,19 @@ export class Association {
 }
 
 export abstract class IQuery {
+    abstract associationsCount(filter?: string): number | Promise<number>;
+
     abstract associations(limit?: number, offset?: number, filter?: string): Association[] | Promise<Association[]>;
 
     abstract association(location?: string, device?: string): Association | Promise<Association>;
 
+    abstract devicesCount(filter?: string): number | Promise<number>;
+
     abstract devices(limit?: number, offset?: number, filter?: string): Device[] | Promise<Device[]>;
 
     abstract device(id?: string): Device | Promise<Device>;
+
+    abstract locationsCount(filter?: string): number | Promise<number>;
 
     abstract locations(limit?: number, offset?: number, filter?: string): Location[] | Promise<Location[]>;
 

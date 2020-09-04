@@ -6,7 +6,6 @@ import { createMemoryHistory } from 'history'
 import Locations from './locations'
 import Associations from './associations'
 import { setContext } from '@apollo/client/link/context';
-import Prot from './prot'
 
 /*
 const httpLink = createHttpLink({
@@ -36,7 +35,6 @@ const history = createMemoryHistory();
 function Home() {
   return (
     <ApolloProvider client={client}>
-      <Prot />
       <Devices />
       <Locations />
       <Associations />
