@@ -7,9 +7,26 @@ import { Roles } from '../guards/roles.decorator'
 export class DevicesResolver {
 
   @Query()
-  @Roles('user', 'admin')
-  async devices(): Promise<Device[]> {
-    return knex('devices')
+  //@Roles('user', 'admin')
+  async devices(
+    @Args('limit') limit:number,
+    @Args('offset') offset:number,
+    @Args('filter') filter?:string
+
+  ): Promise<Device[]> {
+    if (filter !== undefined && filter.length > 0 ) {
+      return knex('devices').where('device','like','%'+filter+'%').orderBy('device').limit(limit).offset(offset)
+    } else {  
+      return knex('devices').orderBy('device').limit(limit).offset(offset)
+    }
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
+  async location(
+    @Args('id') id:string
+  ): Promise<Location[]> {
+    return knex('devices').where({device: id})
   }
 
   @Mutation()

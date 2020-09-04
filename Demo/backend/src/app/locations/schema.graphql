@@ -7,7 +7,8 @@ input LocationInput {
 }
 
 type Query {
-    locations: [Location]
+    locations(limit:Int, offset:Int, filter:String): [Location],
+    location(id:String): Location
 }
 
 type Mutation {

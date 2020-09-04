@@ -10,7 +10,7 @@
     "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx src",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "export DB=sqlite3; jest --coverage --passWithNoTests --detectOpenHandles --forceExit",
-    "test:e2e": "jest --config ./jest.e2e-config.js --coverage --passWithNoTests --detectOpenHandles --forceExit"
+    "test:e2e": "jest --config ./jest.e2e-config.js --passWithNoTests --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@nestjs/common": "^7.4.2",

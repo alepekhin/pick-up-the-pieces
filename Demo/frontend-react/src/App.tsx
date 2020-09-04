@@ -8,6 +8,7 @@ import { ApolloProvider, createHttpLink, InMemoryCache, ApolloClient } from "@ap
 import { setContext } from "@apollo/client/link/context"
 
 import { OidcStore } from "./OidcSlice"
+import DefaultLayout from "./components/DefaultLayout"
 
 export const identityServiceURL = 'http://localhost:8080/auth'
 export const realm = 'demo'
@@ -62,6 +63,7 @@ const App = () => {
                     window.location.href = authUrl
                     return null;
                 }} />
+                <Route path="/dashboard" component={() => <DefaultLayout page={"Dashboard"} /> } />
                 <Route exact path='/' component={Home} />
             </Router>
         </ApolloProvider>

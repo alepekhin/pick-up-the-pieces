@@ -11,14 +11,16 @@ export const createTables = async () => {
   let hasTable = await knex.schema.withSchema(schema).hasTable('locations')
   if (!hasTable) {
     await knex.schema.withSchema(schema).createTable('locations', (table) => {
-      table.string('location')
+      table.string('location'),
+      table.primary(['location'])
     })
   }
 
   hasTable = await knex.schema.withSchema(schema).hasTable('devices')
   if (!hasTable) {
     await knex.schema.withSchema(schema).createTable('devices', (table) => {
-      table.string('device')
+      table.string('device'),
+      table.primary(['device'])
     })
   }
 
@@ -26,7 +28,10 @@ export const createTables = async () => {
   if (!hasTable) {
     await knex.schema.withSchema(schema).createTable('associations', (table) => {
       table.string('device')
-      table.string('location')
+      table.string('location'),
+      table.primary(['device','location']),
+      table.foreign('location').references('location').inTable('locations'),
+      table.foreign('device').references('device').inTable('devices')
     })
   }
 

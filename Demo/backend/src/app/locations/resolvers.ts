@@ -7,9 +7,25 @@ import { Roles } from '../guards/roles.decorator'
 export class LocationsResolver {
 
   @Query()
-  @Roles('user', 'admin')
-  async locations(): Promise<Location[]> {
-    return knex('locations')
+  //@Roles('user', 'admin')
+  async locations(
+    @Args('limit') limit:number,
+    @Args('offset') offset:number,
+    @Args('filter') filter?:string
+  ): Promise<Location[]> {
+    if (filter !== undefined && filter.length > 0 ) {
+      return knex('locations').where('location','like','%'+filter+'%').orderBy('location').limit(limit).offset(offset)
+    } else {  
+      return knex('locations').orderBy('location').limit(limit).offset(offset)
+    }
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
+  async location(
+    @Args('id') id:string
+  ): Promise<Location[]> {
+    return knex('locations').where({location: id})
   }
 
   @Mutation()

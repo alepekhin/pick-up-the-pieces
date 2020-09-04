@@ -25,11 +25,17 @@ export class Association {
 }
 
 export abstract class IQuery {
-    abstract associations(): Association[] | Promise<Association[]>;
+    abstract associations(limit?: number, offset?: number, filter?: string): Association[] | Promise<Association[]>;
 
-    abstract devices(): Device[] | Promise<Device[]>;
+    abstract association(location?: string, device?: string): Association | Promise<Association>;
 
-    abstract locations(): Location[] | Promise<Location[]>;
+    abstract devices(limit?: number, offset?: number, filter?: string): Device[] | Promise<Device[]>;
+
+    abstract device(id?: string): Device | Promise<Device>;
+
+    abstract locations(limit?: number, offset?: number, filter?: string): Location[] | Promise<Location[]>;
+
+    abstract location(id?: string): Location | Promise<Location>;
 }
 
 export abstract class IMutation {

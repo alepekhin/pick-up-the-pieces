@@ -9,7 +9,8 @@ input AssociationInput {
 }
 
 type Query {
-    associations: [Association]
+    associations(limit:Int, offset:Int, filter:String): [Association],
+    association(location:String, device:String): Association
 }
 
 type Mutation {

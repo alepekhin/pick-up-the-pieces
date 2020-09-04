@@ -7,9 +7,26 @@ import { Roles } from '../guards/roles.decorator'
 export class AssociationsResolver {
 
   @Query()
-  @Roles('user', 'admin')
-  async associations(): Promise<Association[]> {
-    return knex('associations')
+  //@Roles('user', 'admin')
+  async associations(
+    @Args('limit') limit:number,
+    @Args('offset') offset:number,
+    @Args('filter') filter?:string
+  ): Promise<Association[]> {
+    if (filter !== undefined && filter.length > 0 ) {
+      return knex('associations').where('location','like','%'+filter+'%').orderBy('location').limit(limit).offset(offset)
+    } else {  
+      return knex('associations').orderBy('location').limit(limit).offset(offset)
+    }
+  }
+
+  @Query()
+  //@Roles('user', 'admin')
+  async association(
+    @Args('lid') locationID:number,
+    @Args('did') deviceID:number
+  ): Promise<Association[]> {
+      return knex('associations').where({location: locationID, device: deviceID})
   }
 
   @Mutation()
