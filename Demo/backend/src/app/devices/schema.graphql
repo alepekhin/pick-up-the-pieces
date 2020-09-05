@@ -9,7 +9,7 @@ input DeviceInput {
 type Query {
     devicesCount(filter:String): Int!,
     devices(limit:Int, offset:Int, filter:String): [Device],
-    device(id:String): Device
+    device(id:String): [Device]
 }
 
 type Mutation {

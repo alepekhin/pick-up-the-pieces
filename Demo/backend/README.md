@@ -31,6 +31,26 @@ will run e2e tests
 Test's code is in the folder `src/test`    
 I don't like polluting the main code with tests
 
+## Playground
+
+mutation {
+  createDevice(device:{device:"xxx"})
+}
+
+query {
+  devices(limit:5, filter:"xxx") {device}
+}
+
+query {
+  device(id:"xxx") {device}
+}
+
+mutation {
+  deleteDevice(device:"xxx")
+}
+
+
+
 
 
 

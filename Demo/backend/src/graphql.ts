@@ -35,7 +35,7 @@ export abstract class IQuery {
 
     abstract devices(limit?: number, offset?: number, filter?: string): Device[] | Promise<Device[]>;
 
-    abstract device(id?: string): Device | Promise<Device>;
+    abstract device(id?: string): Device[] | Promise<Device[]>;
 
     abstract locationsCount(filter?: string): number | Promise<number>;
 

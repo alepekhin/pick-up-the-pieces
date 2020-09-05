@@ -37,9 +37,9 @@ export class DevicesResolver {
 
   @Query()
   //@Roles('user', 'admin')
-  async location(
+  async device(
     @Args('id') id:string
-  ): Promise<Location[]> {
+  ): Promise<Device[]> { // knex always returns array
     return knex('devices').where({device: id})
   }
 
