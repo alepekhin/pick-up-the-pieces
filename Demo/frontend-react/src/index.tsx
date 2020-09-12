@@ -4,7 +4,10 @@ import ReactDOM from 'react-dom';
 import globalStore from './GlobalStore';
 import { Provider } from 'react-redux';
 import Locations from './locations/Location';
+import Devices from './devices/Device';
+import Associations from './associations/Association';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import Dashboard from './components/Dashboard';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
@@ -15,7 +18,7 @@ const client = new ApolloClient({
 ReactDOM.render(
         <Provider store={globalStore}>
         <ApolloProvider client={client}>
-        <Locations />
+        <Dashboard />
         </ApolloProvider>
         </Provider>,
   document.getElementById('root')

@@ -1,56 +1,56 @@
 import React, { useState, useEffect } from 'react'
 import { TextField, Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { setLocations, resetLocations, getLocations, addLocation, deleteLocation } from './LocationSlice';
+import { setDevices, resetDevices, getDevices, addDevice, deleteDevice } from './DeviceSlice';
 import { connect, useSelector } from 'react-redux';
 
-const Location = ({resetLocations, getLocations, setLocations, addLocation, deleteLocation}:any) => {
+const Devices = ({resetDevices, getDevices, setDevices, addDevice, deleteDevice}:any) => {
 
     const PAGESIZE = 20
-    const store = useSelector((state: any) => state.location)
+    const store = useSelector((state: any) => state.device)
     const [filter, setFilter] = useState("")
     const [offset, setOffset] = useState(0)
     
-    const [location, setLocation] = useState('') // new location to add
+    const [device, setDevice] = useState('') // new device to add
 
     useEffect(() => {
-        getLocations({limit:PAGESIZE, offset:0, filter:""})
-    },[getLocations])
+        getDevices({limit:PAGESIZE, offset:0, filter:""})
+    },[getDevices])
 
-    const handleLocationChange = (e: any) => {
-        setLocation(e.target.value)
+    const handleDeviceChange = (e: any) => {
+        setDevice(e.target.value)
     }
 
-    function handleSubmitLocation(e: any) {
+    function handleSubmitDevice(e: any) {
         var charCode = e.which || e.keyCode;
         if (charCode === 13) {
-            addLocation({location: e.target.value})
+            addDevice({device: e.target.value})
         }
     }
 
     const handleFilterChange = (e: any) => {
-        resetLocations([])
+        resetDevices([])
         const newFilter = e.target.value
         setFilter(newFilter)
-        getLocations({limit:PAGESIZE, offset:0, filter:newFilter})
+        getDevices({limit:PAGESIZE, offset:0, filter:newFilter})
     }
 
     const handleDelete = (e: any) => {
-        deleteLocation({location: e.location})
+        deleteDevice({device: e.device})
     }
 
     function fetchData() {
         const newOffset = offset + PAGESIZE
         setOffset(newOffset)
-        getLocations({limit:PAGESIZE, offset:newOffset, filter:filter})
+        getDevices({limit:PAGESIZE, offset:newOffset, filter:filter})
     }
 
     return (
         <div>
 
-            <h1>Locations</h1>
+            <h1>Devices</h1>
 
-            <TextField label="Filter Locations" value={filter} onChange={handleFilterChange} />
+            <TextField label="Filter Devices" value={filter} onChange={handleFilterChange} />
             <p />
             <div id="scr" style={{ height: "200px", width: "250px", overflowY: "scroll", overflowX: "hidden" }}>
             <InfiniteScroll
@@ -61,9 +61,9 @@ const Location = ({resetLocations, getLocations, setLocations, addLocation, dele
                 scrollableTarget="scr">
                     {store.map((s: any) => {
                         return (
-                            <Grid key={s.location} container>
+                            <Grid key={s.device} container>
                             <Grid item xs={8}>
-                                {s.location}
+                                {s.device}
                             </Grid>
                             <Grid item xs={4}>
                                 <Button onClick={() => handleDelete(s)}>Delete</Button>
@@ -75,10 +75,10 @@ const Location = ({resetLocations, getLocations, setLocations, addLocation, dele
             </div>
 
             <p/>
-            <TextField required label="New Location" value={location} onChange={handleLocationChange} onKeyDown={handleSubmitLocation} />
+            <TextField required label="New Device" value={device} onChange={handleDeviceChange} onKeyDown={handleSubmitDevice} />
             
         </div>
     )
 }
 
-export default connect(null, { resetLocations, getLocations, setLocations, addLocation, deleteLocation })(Location)
+export default connect(null, { resetDevices, getDevices, setDevices, addDevice, deleteDevice })(Devices)
