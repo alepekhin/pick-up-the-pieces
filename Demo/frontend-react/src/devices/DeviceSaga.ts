@@ -1,4 +1,4 @@
-import { put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { put, takeEvery } from 'redux-saga/effects'
 import { DeviceQuery, DeviceData } from './DeviceStore'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { setDevices, getDevices, addDevice, deleteDevice } from './DeviceSlice'

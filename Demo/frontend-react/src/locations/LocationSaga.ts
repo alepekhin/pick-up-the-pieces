@@ -1,4 +1,4 @@
-import { put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { put, takeEvery } from 'redux-saga/effects'
 import { LocationQuery, LocationData } from './LocationStore'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { setLocations, getLocations, addLocation, deleteLocation } from './LocationSlice'

@@ -1,4 +1,4 @@
-import { put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { put, takeEvery } from 'redux-saga/effects'
 import { AssociationQuery, AssociationData } from './AssociationStore'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { setAssociations, getAssociations, addAssociation, deleteAssociation } from './AssociationSlice'

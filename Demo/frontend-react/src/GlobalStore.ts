@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { getDefaultMiddleware } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import oidcReducer from './OidcSlice';
+import oidcReducer from './oidc/OidcSlice';
 import locationReducer from './locations/LocationSlice'
 import LocationSaga from './locations/LocationSaga'
 import deviceReducer from './devices/DeviceSlice'

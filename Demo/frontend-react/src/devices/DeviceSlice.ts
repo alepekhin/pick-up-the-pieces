@@ -21,6 +21,7 @@ const DeviceSlice = createSlice({
     setDevices(state: DeviceStore, action: PayloadAction<DeviceData[]>) {
       action.payload.map(x => {
         state.push(x)
+        return null
       })
       return state
     },

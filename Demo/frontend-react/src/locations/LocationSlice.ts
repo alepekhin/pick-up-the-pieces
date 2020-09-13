@@ -21,6 +21,7 @@ const LocationSlice = createSlice({
     setLocations(state: LocationStore, action: PayloadAction<LocationData[]>) {
       action.payload.map(x => {
         state.push(x)
+        return null
       })
       return state
     },

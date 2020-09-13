@@ -21,6 +21,7 @@ const AssociationSlice = createSlice({
     setAssociations(state: AssociationStore, action: PayloadAction<AssociationData[]>) {
       action.payload.map(x => {
         state.push(x)
+        return null
       })
       return state
     },

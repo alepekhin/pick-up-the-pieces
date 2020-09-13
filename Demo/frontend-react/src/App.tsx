@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import Page from "./Page"
 import Home from "./Home"
 import oidc, { Token } from "oidc"
 import { useSelector } from "react-redux"
-import { ApolloProvider, createHttpLink, InMemoryCache, ApolloClient } from "@apollo/client"
+import { createHttpLink } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 
-import { OidcStore } from "./OidcSlice"
-import DefaultLayout from "./components/DefaultLayout"
+import { OidcStore } from "./oidc/OidcSlice"
+import Dashboard from "./dashboard/Dashboard"
 
 export const identityServiceURL = 'http://localhost:8080/auth'
 export const realm = 'demo'
@@ -48,25 +47,15 @@ const App = () => {
         }
     });
 
-    const client = new ApolloClient({
-        uri: 'http://localhost:4000/graphql',
-        link: authLink.concat(httpLink),
-        cache: new InMemoryCache(),
-    });
-
-
     return (
-        <ApolloProvider client={client}>
             <Router>
-                <Route path='/page' component={Page} />
                 <Route path='/login' component={() => {
                     window.location.href = authUrl
                     return null;
                 }} />
-                <Route path="/dashboard" component={() => <DefaultLayout page={"Dashboard"} /> } />
+                <Route path="/dashboard" component={Dashboard} />
                 <Route exact path='/' component={Home} />
             </Router>
-        </ApolloProvider>
     )
 }
 

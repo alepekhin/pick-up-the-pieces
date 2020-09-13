@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { realm, client_id, identityServiceURL } from "./App"
 import { connect } from "react-redux"
-import { setEndpoint, setToken } from './OidcSlice'
+import { setEndpoint, setToken } from './oidc/OidcSlice'
 import oidc from "oidc"
 import { Link } from "react-router-dom"
 
@@ -25,6 +25,8 @@ const Home = ({ setEndpoint, setToken }: any) => {
                         }
                         getToken(code)
                     }
+                } else {
+                    setLogged(true)
                 }
             }
             test()
@@ -38,7 +40,7 @@ const Home = ({ setEndpoint, setToken }: any) => {
             <p/>
             <a href='/login'>Login</a>
             <p/>
-            <Link to="/page">Protected page</Link> 
+            <Link to="/Dashboard">Protected page</Link> 
         </div>
     )
 }
