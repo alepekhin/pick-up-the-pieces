@@ -20,7 +20,10 @@ const AssociationSlice = createSlice({
     },
     setAssociations(state: AssociationStore, action: PayloadAction<AssociationData[]>) {
       action.payload.map(x => {
-        state.push(x)
+        const found = state.some(item => item.device === x.device && item.location === x.location);
+        if (!found) {
+          state.push(x)
+        }
         return null
       })
       return state

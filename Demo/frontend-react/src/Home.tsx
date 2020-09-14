@@ -1,48 +1,33 @@
 import React, { useState, useEffect } from "react"
 import { realm, client_id, identityServiceURL } from "./App"
-import { connect } from "react-redux"
-import { setEndpoint, setToken } from './oidc/OidcSlice'
+import { connect, useSelector } from "react-redux"
+import { setEndpoint, setToken, OidcStore } from './oidc/OidcSlice'
 import oidc from "oidc"
-import { Link } from "react-router-dom"
+import { Redirect, Link } from "react-router-dom"
 
 const Home = ({ setEndpoint, setToken }: any) => {
 
     const [logged, setLogged] = useState(false)
+    const oidcState = useSelector((item: OidcStore) => item.oidc)
 
-    useEffect(
-        () => {
-            const test = async () => {
-                let o = new oidc(identityServiceURL)
-                await o.init(realm)
-                setEndpoint(o.endpoint)
-                if (o.token.access_token.length === 0) {
-                    let code = getQueryVariable('code')
-                    if (code) {
-                        const getToken = async (code: string) => {
-                            await o.getTokenAuth(client_id, code, 'http://localhost:3000')
-                            setToken(o.token)
-                            setLogged(true)
-                        }
-                        getToken(code)
-                    }
-                } else {
-                    setLogged(true)
-                }
-            }
-            test()
-        },[setEndpoint, setToken]
-    )
-
-
-    return (
-        <div>
-            <h1>Home page, logged {logged?'true':'false'}</h1>
-            <p/>
-            <a href='/login'>Login</a>
-            <p/>
-            <Link to="/Dashboard">Protected page</Link> 
-        </div>
-    )
+    if (oidcState.token?.access_token) {
+        return (
+            <div>
+                <h1>You are logged in</h1>
+                <Link to="/dashboard">Dashboard</Link>
+                <p/>
+                <Link to="/logout">Logout</Link>
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <h1>You are not logged in</h1>
+                <p />
+                <a href='/login'>Login</a>
+            </div>
+        )
+    }
 }
 
 function getQueryVariable(variable: string) {

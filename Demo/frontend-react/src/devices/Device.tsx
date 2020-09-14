@@ -49,7 +49,7 @@ const Devices = ({resetDevices, getDevices, setDevices, addDevice, deleteDevice}
         <div>
 
             <h1>Devices</h1>
-
+            
             <TextField label="Filter Devices" value={filter} onChange={handleFilterChange} />
             <p />
             <div id="scr" style={{ height: "200px", width: "250px", overflowY: "scroll", overflowX: "hidden" }}>

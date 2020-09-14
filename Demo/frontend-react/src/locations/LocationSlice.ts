@@ -20,7 +20,10 @@ const LocationSlice = createSlice({
     },
     setLocations(state: LocationStore, action: PayloadAction<LocationData[]>) {
       action.payload.map(x => {
-        state.push(x)
+        const found = state.some(item => item.location === x.location);
+        if (!found) {
+          state.push(x)
+        }
         return null
       })
       return state

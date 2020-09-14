@@ -20,7 +20,10 @@ const DeviceSlice = createSlice({
     },
     setDevices(state: DeviceStore, action: PayloadAction<DeviceData[]>) {
       action.payload.map(x => {
-        state.push(x)
+        const found = state.some(item => item.device === x.device);
+        if (!found) {
+          state.push(x)
+        }
         return null
       })
       return state

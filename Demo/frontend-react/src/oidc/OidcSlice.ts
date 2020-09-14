@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Endpoint, Token, OidcState } from 'oidc';
+import { Endpoint, Token, OidcState, UserInfo } from 'oidc';
 
 const initialState = {
   endpoint: null, 
   token: null, 
+  roles: null, 
   userInfo: null
 } as OidcState
 
@@ -23,9 +24,26 @@ const oidcSlice = createSlice({
       state.token = action.payload
       return state
     },
+    setRoles(state:OidcState, action:PayloadAction<string[]>) {
+      state.roles = action.payload
+      return state
+    },
+    setUserInfo(state:OidcState, action:PayloadAction<UserInfo>) {
+      state.userInfo = action.payload
+      return state
+    },
+    clearState(state:OidcState, action:PayloadAction<void>) {
+      state = {
+        endpoint: null, 
+        token: null, 
+        roles: null, 
+        userInfo: null
+      } as OidcState
+      return state
+    },
   }
 })
 
-export const { setEndpoint, setToken } = oidcSlice.actions
+export const { setEndpoint, setToken, setRoles, setUserInfo, clearState } = oidcSlice.actions
 
 export default oidcSlice.reducer

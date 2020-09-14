@@ -10,37 +10,13 @@ import { identityServiceURL, client_id } from '../App';
 
 const Dashboard = () => {
 
-    const [roles, setRoles] = useState<string[]>([])
     const oidcState = useSelector((item: OidcStore) => item.oidc)
 
-    useEffect(
-        () => {
-            const test = async () => {
-                let o = new oidc(identityServiceURL)
-                o.endpoint = oidcState.endpoint as Endpoint
-                o.token = oidcState.token as Token
-                if (oidcState.token != null) {
-                    let roles = await o.getRoles(oidcState.token.access_token as string, client_id)
-                    setRoles(roles)
-                }
-            }
-            if (roles.length === 0) {
-                test()
-            } else {
+    
 
-            }
-        }
-    )
-
-
-    console.log('Page: roles ' + JSON.stringify(roles))
-
-    if (roles.includes('admin')) {
+    if (oidcState.roles !== null && oidcState.roles.includes('admin')) {
         return (
             <div>
-                <Typography>
-                This page is available for registered users only
-                </Typography>
                 <Grid container spacing={5}>
                     <Grid item xs={4}>
                         <Device />
@@ -56,9 +32,9 @@ const Dashboard = () => {
         )
     } else {
         return (
-            <div>
-                <h1>This page is unavailable for you</h1>
-            </div>
+            <Typography>
+                This page is available for registered users only
+            </Typography>
         )
     }
 }

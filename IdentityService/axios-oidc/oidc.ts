@@ -37,6 +37,7 @@ export interface UserInfo {
 export interface OidcState {
   endpoint: Endpoint | null
   token: Token | null
+  roles: string[] | null
   userInfo: UserInfo | null
 }
 
@@ -202,7 +203,7 @@ export default class oidc {
       'redirect_uri': redirect_uri,
       'refresh_token': refresh_token
     }
-    console.log('logout refresh_token:'+this.token.refresh_token)
+    console.log('logout refresh_token:'+refresh_token)
 
     const config: AxiosRequestConfig = {
       method: 'post',
