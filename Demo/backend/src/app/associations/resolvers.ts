@@ -7,7 +7,7 @@ import { Roles } from '../guards/roles.decorator'
 export class AssociationsResolver {
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async associationsCount(
     @Args('filter') filter?:string
   ): Promise<any> {
@@ -21,7 +21,7 @@ export class AssociationsResolver {
   }
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async associations(
     @Args('limit') limit:number,
     @Args('offset') offset:number,
@@ -35,7 +35,7 @@ export class AssociationsResolver {
   }
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async association(
     @Args('lid') locationID:number,
     @Args('did') deviceID:number
@@ -44,7 +44,7 @@ export class AssociationsResolver {
   }
 
   @Mutation()
-  //@Roles('admin')
+  @Roles('admin')
   async createAssociation(
     @Args('association') association: AssociationInput,
   ): Promise<string> {
@@ -56,7 +56,7 @@ export class AssociationsResolver {
   }
 
   @Mutation()
-  //@Roles('admin')
+  @Roles('admin')
   async deleteAssociation(
     @Args('association') association: AssociationInput,
   ): Promise<string> {

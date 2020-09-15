@@ -203,7 +203,6 @@ export default class oidc {
       'redirect_uri': redirect_uri,
       'refresh_token': refresh_token
     }
-    console.log('logout refresh_token:'+refresh_token)
 
     const config: AxiosRequestConfig = {
       method: 'post',
@@ -211,15 +210,26 @@ export default class oidc {
       data: querystring.stringify(params),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'bearer '+access_token
+        'Authorization': 'Bearer '+access_token
       }
     }
+
+    axios.interceptors.request.use(request => {
+      console.log('Starting Request', request)
+      return request
+    })
+
+    axios.interceptors.response.use(response => {
+      console.log('Response:', response)
+      return response
+    })
+
     await axios(config)
       .then((response) => {
         console.log('logout success')
       })
       .catch((error) => {
-        console.log(error)
+        console.log('axios error in logout: '+error)
       })
   }
 

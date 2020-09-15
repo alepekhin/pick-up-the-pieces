@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Home from "./Home"
-import oidc, { Token, UserInfo } from "oidc"
+import oidc, { Token } from "oidc"
 import { useSelector, connect } from "react-redux"
 import { createHttpLink } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 import { setEndpoint, setToken, OidcStore, setRoles, setUserInfo } from './oidc/OidcSlice'
-
+import client from '.'
 import Dashboard from "./dashboard/Dashboard"
 import Logout from "./oidc/Logout"
 
@@ -31,7 +31,7 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
                     let code = getQueryVariable('code')
                     if (code) {
                         const getToken = async (code: string) => {
-                            await o.getTokenAuth(client_id, code, 'http://localhost:3000')
+                            await o.getTokenAuth(client_id, code, loginRedirectURL)
                             setToken(o.token)
                             const roles = await o.getRoles(o.token.access_token as string, client_id)
                             setRoles(roles)
@@ -48,7 +48,7 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
             //if (!oidcState.token?.access_token) {
                 test()
             //}
-        }, [setEndpoint, setToken]
+        }, [setEndpoint, setToken, setRoles]
     )
 
     const getUserInfo = async (access_token: string) => {
@@ -74,8 +74,9 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
             }
         }
     });
-    console.log('Inside App '+oidcState.token?.access_token)
-
+    
+    client.setLink(authLink.concat(httpLink))
+    
     return (
             <Router>
                 <Route path='/login' component={() => {

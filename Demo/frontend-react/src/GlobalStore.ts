@@ -11,6 +11,14 @@ import associationReducer from './associations/AssociationSlice'
 import AssociationSaga from './associations/AssociationSaga'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER
+} from 'redux-persist'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -30,7 +38,11 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 const globalStore = configureStore({
     reducer:persistedReducer,
-    middleware: [...getDefaultMiddleware(), sagaMiddleware]
+    middleware: [...getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    }), sagaMiddleware]
 });
 
 sagaMiddleware.run(LocationSaga)

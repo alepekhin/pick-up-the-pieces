@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React  from 'react';
 import { Typography, Grid } from '@material-ui/core';
 import Device from '../devices/Device';
 import Location from '../locations/Location';
 import Association from '../associations/Association';
 import { useSelector } from 'react-redux';
 import { OidcStore } from '../oidc/OidcSlice';
-import oidc, { Endpoint, Token } from 'oidc';
-import { identityServiceURL, client_id } from '../App';
 
 const Dashboard = () => {
 
     const oidcState = useSelector((item: OidcStore) => item.oidc)
 
-    
-
-    if (oidcState.roles !== null && oidcState.roles.includes('admin')) {
+    if (oidcState.roles !== null && oidcState.roles.length > 0) {
         return (
             <div>
                 <Grid container spacing={5}>
@@ -39,4 +35,4 @@ const Dashboard = () => {
     }
 }
 
-export default Dashboard;
+export default Dashboard

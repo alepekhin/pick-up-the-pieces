@@ -4,6 +4,8 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { LocationsModule } from './app/locations/module'
 import { Module } from '@nestjs/common'
 import { join } from 'path'
+import { APP_GUARD } from '@nestjs/core'
+import { RolesGuard } from './app/guards/roles.guard'
 
 @Module({
   imports: [
@@ -25,6 +27,10 @@ import { join } from 'path'
   controllers: [
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

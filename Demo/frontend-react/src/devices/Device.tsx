@@ -3,6 +3,7 @@ import { TextField, Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { setDevices, resetDevices, getDevices, addDevice, deleteDevice } from './DeviceSlice';
 import { connect, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const Devices = ({resetDevices, getDevices, setDevices, addDevice, deleteDevice}:any) => {
 
@@ -47,6 +48,7 @@ const Devices = ({resetDevices, getDevices, setDevices, addDevice, deleteDevice}
 
     return (
         <div>
+                <Link to="/logout">Logout</Link>
 
             <h1>Devices</h1>
             

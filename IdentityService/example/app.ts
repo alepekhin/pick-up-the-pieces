@@ -1,8 +1,14 @@
 import oidc from 'oidc'
 import express, { Request, Response } from "express"
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const port = 3000;
+
+export const identityServiceURL = 'http://localhost:8080/auth'
+export const realm = 'demo'
+export const client_id = 'demo-backend'
+export const loginRedirectURL = 'http://localhost:3000'
 
 /*
 Examlpe of axios-oidc usage
@@ -20,6 +26,7 @@ const protected_resource = () => {
 
 const app = express();
 
+app.use(cors())
 app.use(cookieParser())
 
 app.get("/", (req, res, next) => {
@@ -27,11 +34,10 @@ app.get("/", (req, res, next) => {
 });
 
 
-app.get("/logout", async (req, res) => {
+app.get("/logout", cors(), async (req, res) => {
     const url = 'http://localhost:3000/logout'
-    const o = new oidc('http://localhost:8080/auth') // oidc endpoint
-    await o.init('demo')
-    const client_id = 'demo-backend'
+    const o = new oidc(identityServiceURL) // oidc endpoint
+    await o.init(realm)
     let access_token = null
     let refresh_token = null
     if (req.cookies.token) { // check if cookie present
@@ -54,7 +60,7 @@ app.get("/logout", async (req, res) => {
     if (access_token) {
         try {
             console.log('>>> logout start ')
-            await o.logout(access_token, refresh_token as string, client_id, 'http://localhost:3000')
+            await o.logout(access_token, refresh_token as string, client_id, loginRedirectURL)
             console.log('>>> logout end ')
         } catch (e) {
             console.log('>>> logout error '+e)
@@ -76,9 +82,8 @@ app.use(cookieParser())
 
 */
 const isAuthorized = async (req: Request, res: Response, url: string, role?: string) => {
-    const o = new oidc('http://localhost:8080/auth') // oidc endpoint
-    await o.init('demo')
-    const client_id = 'demo-backend'
+    const o = new oidc(identityServiceURL) // oidc endpoint
+    await o.init(realm)
     let access_token = null
     if (req.cookies.token) { // check if cookie present
         access_token = req.cookies.token

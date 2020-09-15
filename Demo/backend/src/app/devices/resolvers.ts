@@ -7,7 +7,7 @@ import { Roles } from '../guards/roles.decorator'
 export class DevicesResolver {
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async devicesCount(
     @Args('filter') filter?:string
   ): Promise<any> {
@@ -21,7 +21,7 @@ export class DevicesResolver {
   }
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async devices(
     @Args('limit') limit:number,
     @Args('offset') offset:number,
@@ -36,7 +36,7 @@ export class DevicesResolver {
   }
 
   @Query()
-  //@Roles('user', 'admin')
+  @Roles('user', 'admin')
   async device(
     @Args('id') id:string
   ): Promise<Device[]> { // knex always returns array
@@ -44,14 +44,14 @@ export class DevicesResolver {
   }
 
   @Mutation()
-  //@Roles('admin')
+  @Roles('admin')
   async createDevice(@Args('device') device: DeviceInput): Promise<string> {
     await knex('devices').insert({ device: device.device })
     return 'OK'
   }
 
   @Mutation()
-  //@Roles('admin')
+  @Roles('admin')
   async deleteDevice(@Args('device') device: string): Promise<string> {
     await knex('devices').where('device', device).del()
     return 'OK'
