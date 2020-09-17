@@ -2,6 +2,8 @@
   "name": "axios-oidc",
   "version": "1.0.0",
   "main": "dist/oidc.js",
+  "author": "alepekhin",
+  "license": "MIT",
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc"
