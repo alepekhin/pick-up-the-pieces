@@ -18,6 +18,7 @@ Note: we can not add Authorization header when redirect
 */
 export interface Token {
   access_token: string
+  id_token?: string
   expires_in?: number
   refresh_expires?: number
   refresh_token?: string
@@ -49,10 +50,10 @@ export default class oidc {
 
   constructor(private url: string) {}
 
-  async init(realm: string) {
+  async init() {
     const config: AxiosRequestConfig = {
       method: 'get',
-      url: this.url + '/realms/' + realm + '/.well-known/openid-configuration'
+      url: this.url
     }
     await axios(config)
       .then((response) => {
@@ -61,6 +62,13 @@ export default class oidc {
           authorization_endpoint: response.data.authorization_endpoint,
           userinfo_endpoint: response.data.userinfo_endpoint,
           end_session_endpoint: response.data.end_session_endpoint
+        }
+        if (response.data.end_session_endpoint) {
+          // keycloak
+          this.endpoint.end_session_endpoint = response.data.end_session_endpoint
+        } else {
+          // google
+          this.endpoint.end_session_endpoint = response.data.revocation_endpoint
         }
       })
       .catch((error) => {
@@ -72,16 +80,18 @@ export default class oidc {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
-    return `${this.endpoint.authorization_endpoint}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=openid`
+    const scope = 'openid profile email'
+    return `${this.endpoint.authorization_endpoint}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`
   }
 
   // Direct Access Grant, typically not used
-  async getToken(client_id: string, username: string, password: string) {
+  async getToken(client_id: string, client_secret: string, username: string, password: string) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
     const params = {
       'client_id': client_id,
+      'client_secret': client_secret,
       'username': username,
       'password': password,
       'grant_type': 'password'
@@ -99,6 +109,7 @@ export default class oidc {
       .then((response) => {
         this.token = {
           access_token: response.data.access_token,
+          id_token: response.data.id_token,
           expires_in: response.data.expires_in,
           refresh_expires: response.data.refresh_expires,
           refresh_token: response.data.refresh_token,
@@ -114,12 +125,13 @@ export default class oidc {
   }
 
   // Authorization Flow Grant
-  async getTokenAuth(client_id: string, code: string, redirect_uri: string ) {
+  async getTokenAuth(client_id: string, client_secret: string, code: string, redirect_uri: string ) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
     const params = {
       'client_id': client_id,
+      'client_secret': client_secret,
       'code': code,
       'redirect_uri': redirect_uri,
       'grant_type': 'authorization_code'
@@ -137,6 +149,7 @@ export default class oidc {
       .then((response) => {
         this.token = {
           access_token: response.data.access_token,
+          id_token: response.data.id_token,
           expires_in: response.data.expires_in,
           refresh_expires: response.data.refresh_expires,
           refresh_token: response.data.refresh_token,
@@ -164,7 +177,7 @@ export default class oidc {
       method: 'get',
       url: this.endpoint.userinfo_endpoint,
       headers: {
-        'Authorization': 'bearer '+access_token
+        'Authorization': 'Bearer '+access_token
       }
     }
     await axios(config)
@@ -193,15 +206,17 @@ export default class oidc {
     return roles
   }
 
-  async logout(access_token: string, refresh_token:string, client_id:string, redirect_uri: string) {
+  async logout(access_token: string, refresh_token:string, client_id:string,  client_secret:string, redirect_uri: string) {
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
 
     const params = {
       'client_id': client_id,
+      'client_secret': client_secret,
       'redirect_uri': redirect_uri,
-      'refresh_token': refresh_token
+      'refresh_token': refresh_token,
+      'token': access_token
     }
 
     const config: AxiosRequestConfig = {
@@ -214,6 +229,7 @@ export default class oidc {
       }
     }
 
+    /*
     axios.interceptors.request.use(request => {
       console.log('Starting Request', request)
       return request
@@ -223,13 +239,14 @@ export default class oidc {
       console.log('Response:', response)
       return response
     })
+    */
 
     await axios(config)
       .then((response) => {
         console.log('logout success')
       })
       .catch((error) => {
-        console.log('axios error in logout: '+error)
+        console.log('logout error: '+error)
       })
   }
 

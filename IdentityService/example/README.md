@@ -10,4 +10,4 @@
 ## How to run
 
 - npm i
-- nom start
+- npm start
