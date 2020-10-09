@@ -15,7 +15,11 @@ const Devices = ({resetDevices, getDevices, setDevices, addDevice, deleteDevice}
     const [device, setDevice] = useState('') // new device to add
 
     useEffect(() => {
-        getDevices({limit:PAGESIZE, offset:0, filter:""})
+        try {
+            getDevices({limit:PAGESIZE, offset:0, filter:""})
+        } catch (error) {
+            console.log('devices '+error)
+        }
     },[getDevices])
 
     const handleDeviceChange = (e: any) => {

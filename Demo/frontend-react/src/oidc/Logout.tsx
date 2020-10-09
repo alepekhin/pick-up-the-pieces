@@ -23,7 +23,7 @@ const Logout = ({clearState}:any) => {
             test()
             clearState()
 
-       },[clearState]
+       },[clearState, oidcState.token]
     )
 
 

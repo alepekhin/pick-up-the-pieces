@@ -45,7 +45,6 @@ export class RolesGuard implements CanActivate {
     
     */
     isAuthorized = async (req: Request, res: Response, isAppoloRequest:boolean, roles?: string[]) => {
-        console.log('>>> inside isAuthorized')
         const url = req.protocol + '://' + req.hostname +':4000'+ req.path
         const o = new oidc('http://localhost:8080/auth') // oidc endpoint
         const client_id = 'demo-backend'

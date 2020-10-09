@@ -23,42 +23,44 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
     useEffect(
         () => {
             const test = async () => {
-                const o = new oidc(identityServiceURL)
-                await o.init(realm)
-                setAuthUrl(o.getLoginURL(client_id, loginRedirectURL))
-                setEndpoint(o.endpoint)
-                if (o.token.access_token.length === 0) {
-                    let code = getQueryVariable('code')
-                    if (code) {
-                        const getToken = async (code: string) => {
-                            await o.getTokenAuth(client_id, code, loginRedirectURL)
-                            setToken(o.token)
-                            const roles = await o.getRoles(o.token.access_token as string, client_id)
-                            setRoles(roles)
-                            const userInfo = await getUserInfo(o.token.access_token)
+                try {
+                    const o = new oidc(identityServiceURL)
+                    await o.init(realm)
+                    setAuthUrl(o.getLoginURL(client_id, loginRedirectURL))
+                    setEndpoint(o.endpoint)
+                    if (o.token.access_token.length === 0) {
+                        let code = getQueryVariable('code')
+                        if (code) {
+                            const getToken = async (code: string) => {
+                                await o.getTokenAuth(client_id, code, loginRedirectURL)
+                                setToken(o.token)
+                                const roles = await o.getRoles(o.token.access_token as string, client_id)
+                                setRoles(roles)
+                                const userInfo = await getUserInfo(o.token.access_token)
 
-                            if (userInfo !== null) {
-                                setUserInfo(userInfo)
+                                if (userInfo !== null) {
+                                    setUserInfo(userInfo)
+                                }
                             }
+                            getToken(code)
                         }
-                        getToken(code)
                     }
+                } catch (error) {
+                    
                 }
             }
-            //if (!oidcState.token?.access_token) {
-                test()
-            //}
+            test()
         }, [setEndpoint, setToken, setRoles]
     )
 
     const getUserInfo = async (access_token: string) => {
-            const o = new oidc(identityServiceURL)
-            await o.init(realm)
-            await o.getUserInfo(access_token)
-            return o.userInfo 
+        const o = new oidc(identityServiceURL)
+        await o.init(realm)
+        await o.getUserInfo(access_token)
+        return o.userInfo
     }
 
-    const httpLink = createHttpLink({
+    const  httpLink = createHttpLink({
         uri: 'http://localhost:4000/graphql',
     });
 
@@ -74,10 +76,13 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
             }
         }
     });
-    
+
     client.setLink(authLink.concat(httpLink))
-    
-    return (
+
+    if (authUrl.length === 0) {
+        return <h1>Identity server error</h1>
+    } else {
+        return (
             <Router>
                 <Route path='/login' component={() => {
                     window.location.href = authUrl
@@ -87,7 +92,8 @@ const App = ({ setEndpoint, setToken, setRoles }: any) => {
                 <Route path="/logout" component={Logout} />
                 <Route exact path='/' component={Home} />
             </Router>
-    )
+        )
+    }
 }
 
 function getQueryVariable(variable: string) {
