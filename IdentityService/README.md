@@ -51,10 +51,11 @@ the output is JWT token:
 ```
 
 
-The folder "example" contains working example backend and frontend copied from other sources on github.
+The folder "example" contains working example with authentication with keycloak or google
+(uncomment desired)
 
-- start backend `npm start`
-- start frontend `npm start`
+- npm i
+- npm start
 
 
 Here’s a list of OIDC endpoints that the Keycloak publishes. These URLs are useful if you are using a non-Keycloak client adapter to talk OIDC with the auth server. These are all relative URLs and the root of the URL being the HTTP(S) protocol, hostname, and usually path prefixed with /auth: i.e. https://localhost:8080/auth
@@ -70,9 +71,6 @@ This is the URL endpoint for performing logouts.
 
 `/realms/{realm-name}/protocol/openid-connect/userinfo`
 This is the URL endpoint for the User Info service described in the OIDC specification.
-
-TODO: write `axios` calls to that endpoints, I think that is all we need for OIDC
-
 
 
   

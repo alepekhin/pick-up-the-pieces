@@ -45,7 +45,7 @@ app.get("/", (req, res, next) => {
 });
 
 
-app.get("/logout", cors(), async (req, res) => {
+app.get("/logout", async (req, res) => {
     const url = logout_url
     const o = new oidc(identityServiceURL) // oidc endpoint
     await o.init()
