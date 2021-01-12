@@ -1,5 +1,8 @@
 # OIDC implementation with `axios`
 
+While OAuth 2.0 is about resource access and sharing, OIDC is about user authentication. 
+Its purpose is to give you one login for multiple sites. 
+
 Implemented as local `npm` module
 
 ## How to build
@@ -18,7 +21,7 @@ import oidc from 'oidc'
 ```
 - then create an instance
 ```
-const o = new oidc('http://localhost:8080/auth') // oidc endpoint
+const o = new Oidc('http://localhost:8080/auth') // oidc endpoint
 ```
 - and use API
 
