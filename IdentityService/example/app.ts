@@ -29,7 +29,7 @@ const publicResource = () => {
     return 'Inside public resource'
 }
 
-const protectedResource = () => {
+const protectedResource =  () => {
     return 'Inside protected resource'
 }
 
@@ -51,14 +51,15 @@ app.get('/public', async (req, res, next) => {
 });
 
 app.get('/protected', async (req, res, next) => {
-    const isAuthenticated = await o.isAuthenticated()
-    console.log('isAuthenticeated? '+ isAuthenticated)
-    if (!isAuthenticated) {
+    if (!(await o.isAuthenticated())) {
         res.redirect(await o.getLoginURL(clientid, loginRedirectURL))
     } else {
-        console.log('authenticated user ',o.userInfo?.name)
-        console.log('authenticated email ',o.userInfo?.email)
-        res.send(protectedResource() + ' <a href="/logout">logout</a>');
+        if (o.isTokenValid()) {
+            res.send(protectedResource() + ' <a href="/logout">logout</a>');
+        } else {
+            res.redirect('/')
+            console.log('Invalid access token')
+        }
     }
 });
 

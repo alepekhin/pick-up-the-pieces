@@ -19,9 +19,28 @@ Implemented as local `npm` module
 ```
 import oidc from 'oidc'
 ```
-- then create an instance
+- then create an instance with .well-known oidc address, known for every oidc provider
+
+For keycloak it is `http://localhost:8080/auth`
+
+For Google it is `https://accounts.google.com/.well-known/openid-configuration`
+
 ```
-const o = new Oidc('http://localhost:8080/auth') // oidc endpoint
+const o = new Oidc('http://localhost:8080/auth') // well-known oidc endpoint for keycloak
+
 ```
-- and use API
+- in protected page check `await o.isAuthenticated()`
+- if not redirect to login page `res.redirect(await o.getLoginURL(clientid, loginRedirectURL))`
+
+where `loginRedirectURL` is redirect page defined at OIDC provider for given client
+
+Inside this page get access token
+```
+await o.getAccessToken(clientid as string, clientsecret as string, req.query.code as string, loginRedirectURL)
+```
+
+Now you are authenticated and can go to protected resources
+
+- You can check access token at any time by `o.isTokenValid()` that returns `true` | `false`
+
 

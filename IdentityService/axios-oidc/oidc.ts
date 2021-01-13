@@ -21,7 +21,7 @@ Note: we can not add Authorization header when redirect
 - we can add cookie only!
 */
 export interface Token {
-  access_token: string
+  access_token: string | null
   id_token?: string
   expires_in?: number
   refresh_expires?: number
@@ -48,7 +48,7 @@ export interface OidcState {
 export default class Oidc {
 
   endpoint: Endpoint | null = null
-  token: Token  = {access_token: ''}
+  token: Token  = {access_token: null}
   userInfo: UserInfo | null = null
 
   constructor(private url: string) {}
@@ -149,17 +149,61 @@ export default class Oidc {
       .catch((error) => {
         this.userInfo = null
       })
-  }
-
-  async isAuthenticated() {
-    await this.getUserInfo()
-    return !(this.userInfo === null)
+    return this.userInfo
   }
 
   logout() {
     // clear state
-    this.token = {access_token: ''}
+    this.token = {access_token: null}
     this.userInfo = null
+  }
+
+  isAuthenticated() {
+    return this.token.access_token !== null
+  }
+
+  async isTokenValid() {
+    return await this.getUserInfo() !== null
+  }
+
+  // Direct Access Grant, typically not used
+  async getToken(clientid: string, clientsecret: string, username: string, password: string) {
+    if (this.endpoint == null) {
+      throw new Error('oidc not initialized')
+    }
+    const params = {
+      'client_id': clientid,
+      'client_secret': clientsecret,
+      'username': username,
+      'password': password,
+      'grant_type': 'password'
+    }
+
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: this.endpoint.token_endpoint,
+      data: querystring.stringify(params),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    await axios(config)
+      .then((response) => {
+        this.token = {
+          access_token: response.data.access_token,
+          id_token: response.data.id_token,
+          expires_in: response.data.expires_in,
+          refresh_expires: response.data.refresh_expires,
+          refresh_token: response.data.refresh_token,
+          session_state: response.data.session_state,
+          scope: response.data.scope,
+          token_type: response.data.token_type,
+          "not-before-policy": response.data['not-before-policy']
+        }
+      })
+      .catch((error) => {
+        throw Error(error);
+      })
   }
 
 }
