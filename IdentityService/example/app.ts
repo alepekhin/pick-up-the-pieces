@@ -54,7 +54,11 @@ app.get('/protected', async (req, res, next) => {
     if (!(await o.isAuthenticated())) {
         res.redirect(await o.getLoginURL(clientid, loginRedirectURL))
     } else {
-        if (o.isTokenValid()) {
+        // example how to verify access token in backend
+        const oo = new Oidc(identityServiceURL)
+        const isTokenValid = await oo.isTokenValid(o.token.access_token)
+        if (isTokenValid) {
+            console.log('Valid access token')
             res.send(protectedResource() + ' <a href="/logout">logout</a>');
         } else {
             res.redirect('/')
@@ -73,11 +77,8 @@ app.listen(port, () => {
     console.log(`server started at http://localhost:${port}`);
 });
 
-app.get("/logout", (req, res) => {
-    o.logout()
+app.get("/logout", async (req, res) => {
+    await o.logout()
     console.log('logout completed')
     res.redirect('/')
 })
-
-
-

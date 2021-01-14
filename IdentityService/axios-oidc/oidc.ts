@@ -21,7 +21,7 @@ Note: we can not add Authorization header when redirect
 - we can add cookie only!
 */
 export interface Token {
-  access_token: string | null
+  access_token: string
   id_token?: string
   expires_in?: number
   refresh_expires?: number
@@ -39,19 +39,16 @@ export interface UserInfo {
   email: string
 }
 
-export interface OidcState {
-  endpoint: Endpoint | null
-  token: Token | null
-  userInfo: UserInfo | null
-}
-
 export default class Oidc {
 
   endpoint: Endpoint | null = null
-  token: Token  = {access_token: null}
+  token: Token  = {access_token: ''}
   userInfo: UserInfo | null = null
+  url: string
 
-  constructor(private url: string) {}
+  constructor(wellKnownUrl: string) {
+    this.url = wellKnownUrl;
+  }
 
   async init() {
     if (this.endpoint === null) {
@@ -127,14 +124,18 @@ export default class Oidc {
   }
 
   /*
-  Returns userInfo and can be used for token validation
+  Returns userInfo and can be used for accessToken validation
   */
-  async getUserInfo() {
+  async getUserInfo(accessToken?: string) {
+    await this.init()
+    if (!accessToken) {
+      accessToken = this.token.access_token as string
+    }
     const config: AxiosRequestConfig = {
       method: 'get',
       url: this.endpoint?.userinfo_endpoint,
       headers: {
-        'Authorization': 'Bearer '+this.token.access_token
+        'Authorization': 'Bearer '+accessToken
       }
     }
     await axios(config)
@@ -147,27 +148,32 @@ export default class Oidc {
         }
       })
       .catch((error) => {
-        this.userInfo = null
+        throw new Error('Can not get user info. Probably you have invalid access token')
       })
     return this.userInfo
   }
 
-  logout() {
+  async logout() {
     // clear state
-    this.token = {access_token: null}
+    this.token = {access_token: ''}
     this.userInfo = null
   }
 
-  isAuthenticated() {
-    return this.token.access_token !== null
+  async isAuthenticated() {
+    return this.token.access_token !== ''
   }
 
-  async isTokenValid() {
-    return await this.getUserInfo() !== null
+  async isTokenValid(accessToken:string) {
+    try {
+      return await this.getUserInfo(accessToken) !== null
+    } catch (error) {
+      return false
+    }
   }
 
   // Direct Access Grant, typically not used
   async getToken(clientid: string, clientsecret: string, username: string, password: string) {
+    await this.init()
     if (this.endpoint == null) {
       throw new Error('oidc not initialized')
     }
